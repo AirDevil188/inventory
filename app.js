@@ -15,7 +15,7 @@ const app = express();
 const mongoose = require("mongoose");
 mongoose.set("strictQuery", false);
 const mongoDB =
-  "mongodb+srv://urosculibrk:<kengur123>@cluster0.5oefklu.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+  "mongodb+srv://urosculibrk:kengur123@cluster0.5oefklu.mongodb.net/inventory?retryWrites=true&w=majority&appName=Cluster0";
 
 main().catch((err) => console.log(err));
 async function main() {

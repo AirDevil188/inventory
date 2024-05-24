@@ -73,6 +73,7 @@ async function gameCreate(
   index,
   title,
   summary,
+  date_of_release,
   esrb_rating,
   publisher,
   developer,
@@ -81,6 +82,7 @@ async function gameCreate(
   const gamedetail = {
     title: title,
     summary: summary,
+    date_of_release: date_of_release,
     publisher: publisher,
     developer: developer,
     esrb_rating: esrb_rating,
@@ -168,6 +170,7 @@ async function createGames() {
       developers[1],
       [genres[0]]
     ),
+
     gameCreate(
       2,
       "Resident Evil 2",

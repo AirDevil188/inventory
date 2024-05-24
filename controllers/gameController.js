@@ -26,3 +26,15 @@ exports.index = asyncHandler(async (req, res, next) => {
     num_gameinstances: numGameInstances,
   });
 });
+
+exports.list_games = asyncHandler(async (req, res, next) => {
+  const allGames = await Game.find()
+    .populate("developer")
+    .sort({ title: 1 })
+    .exec();
+
+  res.render("list_games", {
+    title: "All Games",
+    game_list: allGames,
+  });
+});

@@ -1,0 +1,18 @@
+extends layout
+
+block content
+
+    if game_list 
+        h2.title List of Games:
+        ul
+            each game in game_list
+                li
+                    a(href=`${game.url}`) !{game.title}
+                    |  !{game.developer.name}
+                    
+    else 
+        p There are no games.
+
+        
+        
+        

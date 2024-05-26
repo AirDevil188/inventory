@@ -1,0 +1,25 @@
+extend layout 
+
+block content
+
+    h3 #[strong Game Title: ] !{game.title}
+    p #[strong Publisher: ] 
+        a(href=`${game.publisher.url}`) !{game.publisher.name}
+    p #[strong Developer: ]
+        a(href=`${game.developer.url}`) !{game.developer.name} 
+    p #[strong Game Summary: ] !{game.summary}
+    p #[strong Release Date: ] !{game.date_of_release}
+    p #[strong ESRB Rating: ] !{game.esrb_rating}
+    p #[strong Genre: ]
+        each val in game.genre
+              a(href=`${val.url}`) !{val.name}
+
+
+    if game_instances.length > 0
+        h3 Copies:  
+        each val, index in [game_instances]
+            p #[strong Platform: ]!{val[index].platform}
+            p #[strong Availability: ] !{val[index].status}
+
+    else
+        p There are no copies!

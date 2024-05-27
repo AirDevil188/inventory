@@ -14,7 +14,6 @@ const publishers = [];
 const developers = [];
 const games = [];
 const gameinstances = [];
-
 const mongoose = require("mongoose");
 mongoose.set("strictQuery", false);
 
@@ -57,8 +56,19 @@ async function publisherCreate(index, name, location, d_foundation, d_closing) {
   console.log(`Added publisher: ${name} ${location}`);
 }
 
-async function developerCreate(index, name, location, d_foundation, d_closing) {
-  const developerdetail = { name: name, location: location };
+async function developerCreate(
+  index,
+  name,
+  publisher,
+  location,
+  d_foundation,
+  d_closing
+) {
+  const developerdetail = {
+    name: name,
+    location: location,
+    publisher: publisher,
+  };
   if (d_foundation != false) developerdetail.date_of_foundation = d_foundation;
   if (d_closing != false) developerdetail.date_of_closing = d_closing;
 
@@ -133,17 +143,38 @@ async function createPublishers() {
 async function createDevelopers() {
   console.log("Adding developers");
   await Promise.all([
-    developerCreate(0, "CD Projekt Red", "Warsaw, Poland", "2002-03-6", false),
+    developerCreate(
+      0,
+      "CD Projekt Red",
+      publishers[0],
+      "Warsaw, Poland",
+      "2002-03-6",
+      false
+    ),
     developerCreate(
       1,
       "Rockstar Games",
+      publishers[2],
       "New York City, NY",
       "1998-12-1",
       false
     ),
-    developerCreate(2, "Infinity Ward", "Los Angeles, CA", "2002-05-21", false),
-    developerCreate(3, "3D Realms", "Garland, TX", "1987-01-01", false),
-    developerCreate(4, "Capcom", "Osaka, Japan", "1979-05-30", false),
+    developerCreate(
+      2,
+      "Infinity Ward",
+      publishers[1],
+      "Los Angeles, CA",
+      "2002-05-21",
+      false
+    ),
+    developerCreate(
+      4,
+      "Capcom",
+      publishers[3],
+      "Osaka, Japan",
+      "1979-05-30",
+      false
+    ),
   ]);
 }
 

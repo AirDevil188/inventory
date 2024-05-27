@@ -4,6 +4,7 @@ const Schema = mongoose.Schema;
 
 const DeveloperSchema = new Schema({
   name: { type: String, required: true, maxLength: 100 },
+  publisher: { type: Schema.Types.ObjectId, ref: "Publisher", required: true },
   location: { type: String, required: true, maxLength: 100 },
   date_of_foundation: { type: Date },
   date_of_closing: { type: Date },

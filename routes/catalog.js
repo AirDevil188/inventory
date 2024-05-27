@@ -20,4 +20,8 @@ router.get("/developers", developer_controller.list_developers);
 
 router.get("/developer/:id", developer_controller.developer_detail);
 
+router.get("/genres", genre_controller.list_genres);
+
+router.get("/genre/:id", genre_controller.genre_detail);
+
 module.exports = router;

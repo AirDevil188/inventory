@@ -1,0 +1,15 @@
+extends layout
+
+block content
+
+    h3 #[strong Genre Name: ] !{genre.name}
+    
+    if all_games.length > 0 
+        each games in all_games
+            a(href=`${games.url}`) !{games.title} 
+
+
+    else
+        p There are no games. 
+
+

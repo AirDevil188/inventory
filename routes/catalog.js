@@ -16,4 +16,8 @@ router.get("/publishers", publisher_controller.list_publishers);
 
 router.get("/publisher/:id", publisher_controller.publisher_detail);
 
+router.get("/developers", developer_controller.list_developers);
+
+router.get("/developer/:id", developer_controller.developer_detail);
+
 module.exports = router;

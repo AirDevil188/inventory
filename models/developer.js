@@ -11,7 +11,7 @@ const DeveloperSchema = new Schema({
 });
 
 DeveloperSchema.virtual("url").get(function () {
-  return `/catalog/company/${this._id}`;
+  return `/catalog/developer/${this._id}`;
 });
 
 module.exports = mongoose.model("Developer", DeveloperSchema);

@@ -49,8 +49,6 @@ exports.game_detail = asyncHandler(async (req, res, next) => {
     GameInstance.find({ game: req.params.id }).exec(),
   ]);
 
-  console.log(gameInstances[0].platform);
-
   if (game === null) {
     const err = new Error("Game not found.");
     err.status = 404;

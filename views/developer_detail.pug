@@ -1,0 +1,18 @@
+extends layout
+
+block content
+
+    h3 #[strong Developer Name: ] !{developer.name}
+    p #[strong Location: ]  !{developer.location}
+    p #[strong Date of Foundation: ] !{developer.date_of_foundation}
+    p #[strong Date of Closing: ] !{developer.date_of_closing}
+
+    if all_games.length > 0 
+        each games in all_games
+            a(href=`${games.url}`) !{games.title} 
+
+
+    else
+        p There are no games. 
+
+

@@ -18,16 +18,19 @@ exports.list_genres = asyncHandler(async (req, res, next) => {
 });
 
 exports.genre_detail = asyncHandler(async (req, res, next) => {
-  const [genreDetails, genreGames] = await Promise.all([
+  const [genre, genreGames] = await Promise.all([
     Genre.findById(req.params.id).exec(),
     Game.find({ genre: req.params.id }).exec(),
   ]);
 
-  console.log(genreGames);
-
+  if (genre === null) {
+    const err = new Error("No genre was found.");
+    err.status = 404;
+    return next(err);
+  }
   res.render("genre_detail", {
     title: "Genre",
-    genre: genreDetails,
+    genre: genre,
     all_games: genreGames,
   });
 });

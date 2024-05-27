@@ -12,4 +12,8 @@ router.get("/games", game_controller.list_games);
 
 router.get(`/game/:id`, game_controller.game_detail);
 
+router.get("/publishers", publisher_controller.list_publishers);
+
+router.get("/publisher/:id", publisher_controller.publisher_detail);
+
 module.exports = router;

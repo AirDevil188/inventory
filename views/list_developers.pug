@@ -1,0 +1,15 @@
+extends layout
+
+block content
+
+    if developer_list 
+        h2.title List of Developers:
+        ul
+            each developer in developer_list
+                li
+                    a(href=`${developer.url}`) !{developer.name}
+                    |  !{developer.publisher.name}
+                   
+                    
+    else 
+        p There are no developers.

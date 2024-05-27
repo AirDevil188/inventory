@@ -26,6 +26,12 @@ exports.developer_detail = asyncHandler(async (req, res, next) => {
     Game.find({ developer: req.params.id }).exec(),
   ]);
 
+  if (developer === null) {
+    const err = new Error("Developer was not found.");
+    err.status = 404;
+    return next(err);
+  }
+
   res.render("developer_detail", {
     title: developer.name,
     developer: developer,

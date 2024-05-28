@@ -20,6 +20,8 @@ block content
         each val, index in [game_instances]
             p #[strong Platform: ]!{val[index].platform}
             p #[strong Availability: ] !{val[index].status}
+            p #[strong Id: ]
+                a(href=`${val[index].url}`) !{val[index].id}
 
     else
         p There are no copies!

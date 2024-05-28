@@ -6,9 +6,11 @@ const userArgs = process.argv.slice(2);
 const Game = require("./models/game");
 const Publisher = require("./models/publisher");
 const Developer = require("./models/developer");
+const Platform = require("./models/platform");
 const Genre = require("./models/genre");
 const GameInstance = require("./models/gameinstance");
 
+const platforms = [];
 const genres = [];
 const publishers = [];
 const developers = [];
@@ -25,6 +27,7 @@ async function main() {
   console.log("Debug: About to connect");
   await mongoose.connect(mongoDB);
   console.log("Debug: Should be connected?");
+  await createPlatforms();
   await createGenres();
   await createPublishers();
   await createDevelopers();
@@ -42,6 +45,13 @@ async function genreCreate(index, name) {
   await genre.save();
   genres[index] = genre;
   console.log(`Added genre: ${name}`);
+}
+
+async function platformCreate(index, name) {
+  const platform = new Platform({ name: name });
+  await platform.save();
+  platforms[index] = platform;
+  console.log(`Added platform: ${name}`);
 }
 
 async function publisherCreate(index, name, location, d_foundation, d_closing) {
@@ -87,6 +97,7 @@ async function gameCreate(
   esrb_rating,
   publisher,
   developer,
+  platform,
   genre
 ) {
   const gamedetail = {
@@ -98,6 +109,7 @@ async function gameCreate(
     esrb_rating: esrb_rating,
   };
   if (genre != false) gamedetail.genre = genre;
+  if (platform != false) gamedetail.platform = platform;
 
   const game = new Game(gamedetail);
   await game.save();
@@ -117,6 +129,20 @@ async function gameInstanceCreate(index, game, platform, status, due_back) {
   await gameinstance.save();
   gameinstances[index] = gameinstance;
   console.log(`Added gameinstance: ${platform}`);
+}
+
+async function createPlatforms() {
+  console.log("Adding platforms");
+  await Promise.all([
+    platformCreate(0, "PC"),
+    platformCreate(1, "Playstation 5"),
+    platformCreate(2, "Xbox Series X"),
+    platformCreate(3, "Xbox Series S"),
+    platformCreate(4, "Nintendo Switch"),
+    platformCreate(5, "Xbox 360"),
+    platformCreate(6, "Playstation 1"),
+    platformCreate(7, "Steam Deck"),
+  ]);
 }
 
 async function createGenres() {
@@ -178,6 +204,15 @@ async function createDevelopers() {
   ]);
 }
 
+// platformCreate(0, "PC"),
+// platformCreate(1, "Playstation 5"),
+// platformCreate(2, "Xbox Series X"),
+// platformCreate(3, "Xbox Series S"),
+// platformCreate(4, "Nintendo Switch"),
+// platformCreate(5, "Xbox 360"),
+// platformCreate(6, "Playstation 1"),
+// platformCreate(0, "Steam Deck"),
+
 async function createGames() {
   console.log("Adding Games");
   await Promise.all([
@@ -189,6 +224,14 @@ async function createGames() {
       "Mature 17+",
       publishers[0],
       developers[0],
+      [
+        platforms[0],
+        platforms[1],
+        platforms[2],
+        platforms[3],
+        platforms[4],
+        platforms[7],
+      ],
       [genres[1]]
     ),
     gameCreate(
@@ -199,6 +242,14 @@ async function createGames() {
       "Mature 17+",
       publishers[2],
       developers[1],
+      [
+        platforms[0],
+        platforms[1],
+        platforms[2],
+        platforms[3],
+        platforms[5],
+        platforms[7],
+      ],
       [genres[0]]
     ),
 
@@ -210,6 +261,7 @@ async function createGames() {
       "Mature 17+",
       publishers[3],
       developers[4],
+      [platforms[6]],
       [genres[3]]
     ),
   ]);

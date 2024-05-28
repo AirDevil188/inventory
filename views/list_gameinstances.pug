@@ -1,0 +1,14 @@
+extends layout
+
+block content
+
+    if gameinstance_list 
+        h2.title List of Gameinstances:
+        ul
+            each gameinstance in gameinstance_list
+                li
+                    a(href=`${gameinstance.url}`) !{gameinstance.game.title} : !{gameinstance.platform}
+                    
+                    
+    else 
+        p There are no gameinstances.

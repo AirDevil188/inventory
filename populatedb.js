@@ -266,5 +266,3 @@ async function createGameInstances() {
     gameInstanceCreate(2, games[0], "PS4", "Loaned", false),
   ]);
 }
-
-// index, game, platform, status, due_back

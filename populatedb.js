@@ -204,15 +204,6 @@ async function createDevelopers() {
   ]);
 }
 
-// platformCreate(0, "PC"),
-// platformCreate(1, "Playstation 5"),
-// platformCreate(2, "Xbox Series X"),
-// platformCreate(3, "Xbox Series S"),
-// platformCreate(4, "Nintendo Switch"),
-// platformCreate(5, "Xbox 360"),
-// platformCreate(6, "Playstation 1"),
-// platformCreate(0, "Steam Deck"),
-
 async function createGames() {
   console.log("Adding Games");
   await Promise.all([

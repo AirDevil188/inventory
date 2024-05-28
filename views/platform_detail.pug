@@ -1,0 +1,13 @@
+extends layout 
+
+block content
+
+    h3 Platform: !{platform.name}
+
+    if list_games.length > 0 
+        p #[strong Available games on this platform: ]
+            each game in list_games
+                a(href=`${game.url}`)
+                    p !{game.title} - !{game.platform}
+
+    

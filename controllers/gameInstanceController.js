@@ -1,6 +1,3 @@
-const Game = require("../models/game");
-const Publisher = require("../models/publisher");
-const Developer = require("../models/developer");
 const GameInstance = require("../models/gameinstance");
 
 const asyncHandler = require("express-async-handler");
@@ -20,8 +17,16 @@ exports.gameinstance_detail = asyncHandler(async (req, res, next) => {
     .populate("game")
     .exec();
 
+  if (gameinstance === null) {
+    const err = new Error("Gameinstance was not found");
+    err.status = 404;
+    return next(err);
+  }
+
   res.render("gameinstance_detail", {
     title: `Gameinstace copy: ` + gameinstance.game.title,
     gameinstance: gameinstance,
   });
 });
+
+/// 4.321

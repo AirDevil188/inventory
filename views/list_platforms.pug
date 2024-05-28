@@ -1,0 +1,14 @@
+extend layout
+
+block content
+
+    h3 Platform List: 
+        
+    if platform_list.length > 0
+        ul
+            each platform in platform_list
+                li
+                    a(href=`${platform.url}`) !{platform.name} 
+
+    else
+        p There are no platforms. 

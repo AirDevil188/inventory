@@ -1,7 +1,4 @@
 const Game = require("../models/game");
-const Developer = require("../models/developer");
-const Publisher = require("../models/publisher");
-const GameInstance = require("../models/gameinstance");
 const Genre = require("../models/genre");
 
 const asyncHandler = require("express-async-handler");

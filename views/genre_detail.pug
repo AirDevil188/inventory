@@ -5,11 +5,19 @@ block content
     h3 #[strong Genre Name: ] !{genre.name}
     
     if all_games.length > 0 
-        each games in all_games
-            a(href=`${games.url}`) !{games.title} 
+        ul
+            each game in all_games
+                li 
+                    a(href=`${game.url}`) !{game.title}
+
+
+    
+        div 
+            a(href=`/catalog/${genre._id}/delete`) Delete genre
+            a(href=`catalog/${genre._id}/update`) Update genre 
 
 
     else
-        p There are no games. 
+        p There are no genres. 
 
 

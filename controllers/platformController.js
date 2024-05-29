@@ -26,5 +26,6 @@ exports.platform_detail = asyncHandler(async (req, res, next) => {
   res.render("platform_detail", {
     title: platform.title,
     platform: platform,
+    list_games: allGamesPlatform,
   });
 });

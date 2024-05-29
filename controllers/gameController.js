@@ -46,6 +46,7 @@ exports.game_detail = asyncHandler(async (req, res, next) => {
       .populate("developer")
       .populate("publisher")
       .populate("genre")
+      .populate("platform")
       .exec(),
     GameInstance.find({ game: req.params.id }).exec(),
   ]);
@@ -111,13 +112,13 @@ exports.game_form_post = [
     .isLength({ min: 1 })
     .escape(),
 
-  body("game_genre*").escape(),
+  body("game_genre", "Genre must not be empty").notEmpty().escape(),
 
-  body("platform*").escape(),
+  body("game_platform", "Platform must not be empty").notEmpty().escape(),
 
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req);
-    console.log(errors);
+    console.log(errors, "err");
 
     const game = new Game({
       title: req.body.game_title,

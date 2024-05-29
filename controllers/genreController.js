@@ -31,3 +31,34 @@ exports.genre_detail = asyncHandler(async (req, res, next) => {
     all_games: genreGames,
   });
 });
+
+exports.genre_form_get = asyncHandler(async (req, res, next) => {
+  res.render("genre_form", {
+    title: "Create Genre",
+  });
+});
+
+exports.genre_form_post = [
+  body("game_genre", "Genre must not be empty.")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req);
+
+    const genre = new Genre({
+      name: req.body.game_genre,
+    });
+
+    if (!errors.isEmpty()) {
+      res.render("genre_form", {
+        title: "Create Genre",
+        errors: errors.array(),
+      });
+    } else {
+      await genre.save();
+      res.redirect(genre.url);
+    }
+  }),
+];

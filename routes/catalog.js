@@ -10,6 +10,10 @@ const gameinstance_controller = require("../controllers/gameInstanceController")
 
 router.get("/", game_controller.index);
 
+router.get("/game/create", game_controller.game_form_get);
+
+router.post("/game/create", game_controller.game_form_post);
+
 router.get("/games", game_controller.list_games);
 
 router.get(`/game/:id`, game_controller.game_detail);

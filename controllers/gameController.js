@@ -3,6 +3,7 @@ const Publisher = require("../models/publisher");
 const Developer = require("../models/developer");
 const Genre = require("../models/genre");
 const GameInstance = require("../models/gameinstance");
+const Platform = require("../models/platform");
 
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
@@ -61,3 +62,94 @@ exports.game_detail = asyncHandler(async (req, res, next) => {
     game_instances: gameInstances,
   });
 });
+
+exports.game_form_get = asyncHandler(async (req, res, next) => {
+  const [allPublishers, allDevelopers, allPlatforms, allGenres] =
+    await Promise.all([
+      Publisher.find().sort({ name: 1 }).exec(),
+      Developer.find().sort({ name: 1 }).exec(),
+      Platform.find().sort({ name: 1 }).exec(),
+      Genre.find().sort({ name: 1 }).exec(),
+    ]);
+  res.render("game_form", {
+    title: "Create Game",
+    list_publishers: allPublishers,
+    list_developers: allDevelopers,
+    list_platforms: allPlatforms,
+    list_genres: allGenres,
+  });
+});
+
+exports.game_form_post = [
+  body("game_title", "Title must not be empty")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+
+  body("game_publisher", "Publisher must not be empty.")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+
+  body("game_developer", "Developer must not be empty")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+
+  body("game_summary", "Game summary must not be empty.")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+
+  body("game_release_date", "Game must have a release date.")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+
+  body("game_esrb_rating", "Game ESRB Rating must not be empty.")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+
+  body("game_genre*").escape(),
+
+  body("platform*").escape(),
+
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req);
+    console.log(errors);
+
+    const game = new Game({
+      title: req.body.game_title,
+      publisher: req.body.game_publisher,
+      developer: req.body.game_developer,
+      summary: req.body.game_summary,
+      esrb_rating: req.body.game_esrb_rating,
+      date_of_release: req.body.game_release_date,
+      platform: req.body.game_platform,
+      genre: req.body.game_genre,
+    });
+
+    if (!errors.isEmpty()) {
+      const [allPublishers, allDevelopers, allPlatforms, allGenres] =
+        await Promise.all([
+          Publisher.find().sort({ name: 1 }).exec(),
+          Developer.find().sort({ name: 1 }).exec(),
+          Platform.find().sort({ name: 1 }).exec(),
+          Genre.find().sort({ name: 1 }).exec(),
+        ]);
+
+      res.render("game_form", {
+        title: "Create Game",
+        list_publishers: allPublishers,
+        list_developers: allDevelopers,
+        list_platforms: allPlatforms,
+        list_genres: allGenres,
+        errors: errors.array(),
+      });
+    } else {
+      await game.save();
+      res.redirect(game.url);
+    }
+  }),
+];

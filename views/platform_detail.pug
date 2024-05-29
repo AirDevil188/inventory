@@ -8,6 +8,7 @@ block content
         p #[strong Available games on this platform: ]
             each game in list_games
                 a(href=`${game.url}`)
-                    p !{game.title} - !{game.platform}
+                    p !{game.title} - !{game.id}
 
-    
+    else 
+        p No games.

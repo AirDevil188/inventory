@@ -14,6 +14,10 @@ router.get("/game/create", game_controller.game_form_get);
 
 router.post("/game/create", game_controller.game_form_post);
 
+router.get("/genre/create", genre_controller.genre_form_get);
+
+router.post("/genre/create", genre_controller.genre_form_post);
+
 router.get("/games", game_controller.list_games);
 
 router.get(`/game/:id`, game_controller.game_detail);

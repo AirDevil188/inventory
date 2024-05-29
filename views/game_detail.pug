@@ -10,6 +10,9 @@ block content
     p #[strong Game Summary: ] !{game.summary}
     p #[strong Release Date: ] !{game.date_of_release}
     p #[strong ESRB Rating: ] !{game.esrb_rating}
+    p #[strong Platform: ]
+        each val in game.platform
+            a(href=`${val.url}`) !{val.name} 
     p #[strong Genre: ]
         each val in game.genre
               a(href=`${val.url}`) !{val.name}

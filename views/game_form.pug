@@ -10,14 +10,14 @@ block content
              input(type= "text", id="game_title" name= "game_title" required).form-control
         div.form-group
             label(for="game_developer").form-label #[strong Developer: ]
-            select#game_developer.form-control(name="game_developer", required)
+            select#game_developer.form-control(name="game_developer",)
                 for developer in list_developers
                     if developer
                             option(value= developer._id) #{developer.name}
 
         div.form-group
             label(for="game_publisher").form-label #[strong Publisher: ]
-            select#game_publisher.form-control(name="game_publisher" required)
+            select#game_publisher.form-control(name="game_publisher")
                 for publisher in list_publishers
                     if publisher
                         option(value = publisher._id) #{publisher.name}
@@ -28,7 +28,7 @@ block content
 
         div.form-group
             label(for= "game_esrb_rating").form-label #[strong ESRB Rating: ] 
-            input(type= "text", id="game_esrb_rating" name= "game_esrb_rating" required).form-control
+            input(type= "text", id="game_esrb_rating" name= "game_esrb_rating").form-control
 
         div.form-group
             label(for="game_release_date").form-label #[strong Date of Release: ]
@@ -40,7 +40,7 @@ block content
                     for platform, index in list_platforms
                         if platform
                             label.form-check-label(for= platform._id)  !{platform.name}
-                            input.form-check-input(type="checkbox" id= platform._id value= platform._id name="game_platform")
+                            input.form-check-input(type="checkbox" id= platform._id value= platform._id name="game_platform" )
 
         div.form-group
             div.form-check.form-check-inline
@@ -48,10 +48,18 @@ block content
                     for genre, index in list_genres
                         if genre
                             label.form-check-label(for= genre._id) !{genre.name}
-                            input.form-check-input(type="checkbox" id= genre._id value= genre._id name= "game_genre")
+                            input.form-check-input(type="checkbox" id= genre._id value= genre._id name= "game_genre" )
 
         div.form-group
         button(type="submit").btn.btn-primary Submit
+
+
+        if errors 
+            each error in errors 
+                div.alert.alert-danger(role = "alert")
+                    p !{error.msg}
+
+
 
 
             

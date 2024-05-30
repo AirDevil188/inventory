@@ -66,3 +66,23 @@ exports.gameinstance_form_post = [
     }
   }),
 ];
+
+exports.gameinstance_delete_get = asyncHandler(async (req, res, next) => {
+  const gameinstance = await GameInstance.findById(req.params.id).exec();
+
+  if (gameinstance === null) {
+    const err = new Error("Gameinstance was not found.");
+    err.status = 404;
+    return next(err);
+  }
+
+  res.render("gameinstance_delete", {
+    title: "Delete Gameinstance",
+    gameinstance: gameinstance,
+  });
+});
+
+exports.gameinstance_delete_post = asyncHandler(async (req, res, next) => {
+  await GameInstance.findByIdAndDelete(req.body.gameinstance_id);
+  res.redirect("/catalog/gameinstances");
+});

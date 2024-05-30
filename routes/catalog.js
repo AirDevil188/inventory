@@ -23,6 +23,13 @@ router.get("/publisher/create", publisher_controller.publisher_form_get);
 
 router.post("/publisher/create", publisher_controller.publisher_form_post);
 
+router.get("/publisher/:id/delete", publisher_controller.publisher_delete_get);
+
+router.post(
+  "/publisher/:id/delete",
+  publisher_controller.publisher_delete_post
+);
+
 router.get("/publisher/:id", publisher_controller.publisher_detail);
 
 router.get("/publishers", publisher_controller.list_publishers);

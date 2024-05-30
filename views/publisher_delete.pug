@@ -1,0 +1,25 @@
+extends layout 
+
+block content
+
+    if list_games.length > 0
+        p #[strong Before deleting publisher,  delete following games: ]
+            each game in list_games
+                li !{game.title}
+
+    if list_developers.length > 0
+        p #[strong Before deleting publisher delete following developers: ]
+            each developer in list_developers
+                li !{developer.name}
+
+   
+
+    else
+        p #[strong Are you sure that you want to delete this publisher: ]
+
+            form(method="POST")
+                div.form-group
+                    input.form-control(type= "hidden", name= "publisher_id", id= "publisher_id", value=publisher.id )
+                    
+                button.btn.btn-primary(type="submit") Delete
+

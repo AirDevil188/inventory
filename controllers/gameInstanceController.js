@@ -30,7 +30,7 @@ exports.gameinstance_detail = asyncHandler(async (req, res, next) => {
   });
 });
 
-exports.gameinstance_create_form_get = asyncHandler(async (req, res, next) => {
+exports.gameinstance_form_get = asyncHandler(async (req, res, next) => {
   const allGames = await Game.find().sort({ title: 1 }).exec();
   res.render("gameinstance_form", {
     title: "Create Gameinstance",
@@ -38,8 +38,11 @@ exports.gameinstance_create_form_get = asyncHandler(async (req, res, next) => {
   });
 });
 
-exports.gameinstance_create_form_post = [
-  body("gameinstance_platform", "Platform must not be empty.").trim().escape(),
+exports.gameinstance_form_post = [
+  body("gameinstance_platform", "Platform must not be empty.")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
 
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req);
@@ -54,6 +57,7 @@ exports.gameinstance_create_form_post = [
       res.render("gameinstance_form", {
         title: "Create Gameinstance",
         list_games: allGames,
+        gameinstance: gameinstance,
       });
       return;
     } else {

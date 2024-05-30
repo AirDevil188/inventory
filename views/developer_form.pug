@@ -1,0 +1,38 @@
+extends layout
+
+block content 
+
+    h3 Create Publisher: 
+
+    form(method="POST") 
+        div.form-group
+            label(for="developer_name").form-label #[strong Name: ]
+            input(type="text" id= "developer_name", name="developer_name", required).form-control
+
+        div.form-group
+            label(for="developer_publisher").form-label #[strong Publisher: ]
+            select#developer_publisher(name="developer_publisher").form-control
+                each publisher, index in list_publishers
+                    if publisher
+                        option(value=publisher.id) !{publisher.name} 
+
+        div.form-group
+            label(for="developer_location").form-label #[strong Location: ]
+            input(type="text", id="developer_location", name="developer_location" required).form-control
+
+        div.form-group
+            label(for="developer_date_of_foundation").form-label #[strong Date of Foundation: ]
+            input(type="date", id="developer_date_of_foundation", name="developer_date_of_foundation" required).form-control 
+
+        div.form-group
+            label(for="developer_date_of_closing").form-label #[strong Date of Closing: ]
+            input(type="date", id="developer_date_of_closing", name="developer_date_of_closing").form-control
+
+        div.form-group
+        button(type="submit").btn.btn-primary Submit
+
+
+        if errors 
+            each error in errors 
+                div.alert.alert-danger(role = "alert")
+                    p !{error.msg}

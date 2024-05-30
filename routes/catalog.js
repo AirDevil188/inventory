@@ -27,6 +27,10 @@ router.get("/publisher/:id", publisher_controller.publisher_detail);
 
 router.get("/publishers", publisher_controller.list_publishers);
 
+router.get("/developer/create", developer_controller.developer_form_get);
+
+router.post("/developer/create", developer_controller.developer_form_post);
+
 router.get("/developers", developer_controller.list_developers);
 
 router.get("/developer/:id", developer_controller.developer_detail);

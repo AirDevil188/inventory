@@ -62,3 +62,41 @@ exports.genre_form_post = [
     }
   }),
 ];
+
+exports.genre_delete_get = asyncHandler(async (req, res, next) => {
+  const [genre, allGamesGenre] = await Promise.all([
+    Genre.findById(req.params.id).exec(),
+    Game.find({ genre: req.params.id }).sort({ title: 1 }).exec(),
+  ]);
+
+  if (allGamesGenre === null) {
+    const err = new Error("Games were not found.");
+    err.status = 404;
+    return next(err);
+  }
+
+  res.render("genre_delete", {
+    title: "Delete Genre",
+    genre: genre,
+    list_games: allGamesGenre,
+  });
+});
+
+exports.genre_delete_post = asyncHandler(async (req, res, next) => {
+  const [genre, allGamesGenre] = await Promise.all([
+    Genre.findById(req.params.id).exec(),
+    Game.find({ genre: req.params.id }).sort({ title: 1 }).exec(),
+  ]);
+
+  if (allGamesGenre.length > 0) {
+    res.render("genre_delete", {
+      title: "Delete Genre",
+      genre: genre,
+      list_games: allGamesGenre,
+    });
+    return;
+  } else {
+    await Genre.findByIdAndDelete(req.body.genre_id);
+    res.redirect("/catalog/genres");
+  }
+});

@@ -51,6 +51,16 @@ router.get("/genres", genre_controller.list_genres);
 
 router.get("/genre/:id", genre_controller.genre_detail);
 
+router.get(
+  "/gameinstance/:id/delete",
+  gameinstance_controller.gameinstance_delete_get
+);
+
+router.post(
+  "/gameinstance/:id/delete",
+  gameinstance_controller.gameinstance_delete_post
+);
+
 router.post(
   "/gameinstance/create",
   gameinstance_controller.gameinstance_form_post

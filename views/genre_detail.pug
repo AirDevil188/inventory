@@ -12,12 +12,13 @@ block content
 
 
     
-        div 
-            a(href=`/catalog/${genre._id}/delete`) Delete genre
-            a(href=`catalog/${genre._id}/update`) Update genre 
+        
 
 
     else
         p There are no genres. 
 
+
+    div 
+            a(href=genre.url+'/delete') Delete Genre
 

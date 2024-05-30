@@ -1,5 +1,6 @@
 const Game = require("../models/game");
 const Publisher = require("../models/publisher");
+const Developer = require("../models/developer");
 
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
@@ -77,3 +78,47 @@ exports.publisher_form_post = [
     }
   }),
 ];
+
+exports.publisher_delete_get = asyncHandler(async (req, res, next) => {
+  const [publisher, allGamesPublisher, allDevelopersPublisher] =
+    await Promise.all([
+      Publisher.findById(req.params.id).exec(),
+      Game.find({ publisher: req.params.id }).sort({ title: 1 }).exec(),
+      Developer.find({ publisher: req.params.id }).sort({ name: 1 }).exec(),
+    ]);
+
+  if (allGamesPublisher === null) {
+    const err = new Error("Games by this publisher were not found.");
+    err.status = 404;
+    return next(err);
+  }
+
+  res.render("publisher_delete", {
+    title: "Delete Publisher",
+    publisher: publisher,
+    list_games: allGamesPublisher,
+    list_developers: allDevelopersPublisher,
+  });
+});
+
+exports.publisher_delete_post = asyncHandler(async (req, res, next) => {
+  const [publisher, allGamesPublisher, allDevelopersPublisher] =
+    await Promise.all([
+      Publisher.findById(req.params.id).exec(),
+      Game.find({ publisher: req.params.id }).sort({ title: 1 }).exec(),
+      Developer.find({ publisher: req.params.id }).sort({ name: 1 }).exec(),
+    ]);
+
+  if (allGamesPublisher.length > 0 || allDevelopersPublisher.length > 0) {
+    res.render("publisher_delete", {
+      title: "Delete Publisher",
+      publisher: publisher,
+      list_developers: allDevelopersPublisher,
+      list_games: allGamesPublisher,
+    });
+    return;
+  } else {
+    await Publisher.findByIdAndDelete(req.body.publisher_id);
+    res.redirect("/catalog/publishers");
+  }
+});

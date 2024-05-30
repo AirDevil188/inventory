@@ -7,10 +7,16 @@ block content
     p #[strong Date of Foundation: ] !{publisher.date_of_foundation}
     p #[strong Date of Closing: ] !{publisher.date_of_closing}
 
+
     if all_games.length > 0 
+        p #[strong List of Games: ]
         each game in all_games
-            a(href=`${game.url}`) !{game.title} 
+            a(href=`${game.url}`)
+                p !{game.title} 
 
 
     else
         p There are no games. 
+
+
+    a(href=publisher.url+"/delete") Delete Publisher

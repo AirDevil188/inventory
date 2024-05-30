@@ -7,6 +7,7 @@ const developer_controller = require("../controllers/developerController");
 const platform_controller = require("../controllers/platformController");
 const genre_controller = require("../controllers/genreController");
 const gameinstance_controller = require("../controllers/gameInstanceController");
+const gameinstance = require("../models/gameinstance");
 
 router.get("/", game_controller.index);
 
@@ -41,6 +42,15 @@ router.get("/genre/:id/delete", genre_controller.genre_delete_get);
 router.get("/genres", genre_controller.list_genres);
 
 router.get("/genre/:id", genre_controller.genre_detail);
+
+router.post(
+  "/gameinstance/create",
+  gameinstance_controller.gameinstance_create_form_post
+);
+router.get(
+  "/gameinstance/create",
+  gameinstance_controller.gameinstance_create_form_get
+);
 
 router.get("/gameinstances", gameinstance_controller.list_gameinstances);
 

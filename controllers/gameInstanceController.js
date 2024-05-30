@@ -1,4 +1,5 @@
 const GameInstance = require("../models/gameinstance");
+const Game = require("../models/game");
 
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
@@ -29,4 +30,35 @@ exports.gameinstance_detail = asyncHandler(async (req, res, next) => {
   });
 });
 
-/// 4.321
+exports.gameinstance_create_form_get = asyncHandler(async (req, res, next) => {
+  const allGames = await Game.find().sort({ title: 1 }).exec();
+  res.render("gameinstance_form", {
+    title: "Create Gameinstance",
+    list_games: allGames,
+  });
+});
+
+exports.gameinstance_create_form_post = [
+  body("gameinstance_platform", "Platform must not be empty.").trim().escape(),
+
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req);
+    const [allGames] = await Game.find().sort({ title: 1 }).exec();
+    const gameinstance = new GameInstance({
+      game: req.body.gameinstance_game,
+      platform: req.body.gameinstance_platform,
+      status: req.body.gameinstance_status,
+    });
+
+    if (!errors.isEmpty()) {
+      res.render("gameinstance_form", {
+        title: "Create Gameinstance",
+        list_games: allGames,
+      });
+      return;
+    } else {
+      await gameinstance.save();
+      res.redirect("/catalog/gameinstances");
+    }
+  }),
+];

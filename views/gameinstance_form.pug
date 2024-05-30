@@ -1,0 +1,30 @@
+extend layout 
+
+block content
+
+
+    h3 Create New Gameinstance:
+    form(method= "POST")
+        div.form-group
+             label(for="gameinstance_game").form-label #[strong Game: ]
+             select#gameinstance_game(name="gameinstance_game" ).form-control
+                each game in list_games
+                    option(value=game._id id= game._id) !{game.title}
+        div.form-group
+            label(for="gameinstance_platform").form-label #[strong Platform: ]
+            input(type="text", name="gameinstance_platform", id="gameinstance_platform" required).form-control
+
+        div.form-group
+            label(for="gameinstance_status").form-label #[strong Status: ]
+            select#gameinstance_status(name="gameinstance_status").form-control
+                option(value="Maintenance") Maintenance
+                option(value="Available") Available
+                option(value="Loaned") Loaned 
+
+
+        button.btn.btn-primary(type="submit") Submit
+
+        if errors 
+            each error in errors 
+                div.alert.alert-danger(role = "alert")
+                    p !{error.msg}

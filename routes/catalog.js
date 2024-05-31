@@ -38,6 +38,13 @@ router.get("/developer/create", developer_controller.developer_form_get);
 
 router.post("/developer/create", developer_controller.developer_form_post);
 
+router.get("/developer/:id/delete", developer_controller.developer_delete_get);
+
+router.post(
+  "/developer/:id/delete",
+  developer_controller.developer_delete_post
+);
+
 router.get("/developers", developer_controller.list_developers);
 
 router.get("/developer/:id", developer_controller.developer_detail);

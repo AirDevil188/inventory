@@ -29,3 +29,68 @@ exports.platform_detail = asyncHandler(async (req, res, next) => {
     list_games: allGamesPlatform,
   });
 });
+
+exports.platform_form_get = asyncHandler(async (req, res, next) => {
+  res.render("platform_form", {
+    title: "Create Platform",
+  });
+});
+
+exports.platform_form_post = [
+  body("platform_name", "Platform name must not be empty.")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req);
+    const platform = new Platform({
+      name: req.body.platform_name,
+    });
+
+    if (!errors.isEmpty()) {
+      res.render("platform_form");
+    } else {
+      await platform.save();
+      res.redirect(platform.url);
+    }
+  }),
+];
+
+exports.platform_delete_get = asyncHandler(async (req, res, next) => {
+  const [platform, allGamesPlatform] = await Promise.all([
+    Platform.findById(req.params.id).exec(),
+    Game.find({ platform: req.params.id }).sort({ title: 1 }).exec(),
+  ]);
+
+  if (platform === null) {
+    const err = new Error("Platform was not found.");
+    err.status = 404;
+    return next(err);
+  }
+
+  res.render("platform_delete", {
+    title: "Delete Platform",
+    platform: platform,
+    list_games: allGamesPlatform,
+  });
+});
+
+exports.platform_delete_post = asyncHandler(async (req, res, next) => {
+  const [platform, allGamesPlatform] = await Promise.all([
+    Platform.findById(req.params.id).exec(),
+    Game.find({ platform: req.params.id }).sort({ title: 1 }).exec(),
+  ]);
+
+  if (allGamesPlatform.length > 0) {
+    res.render("platform_delete", {
+      title: "Delete Platform",
+      platform: platform,
+      list_games: allGamesPlatform,
+    });
+    return;
+  } else {
+    await Platform.findByIdAndDelete(req.body.platform_id);
+    res.redirect("/catalog/platforms");
+  }
+});

@@ -1,0 +1,22 @@
+extends layout 
+
+block content
+
+    if list_games.length > 0
+        p #[strong Before deleting developer,  delete following games: ]
+            each game in list_games
+                li !{game.title}
+
+ 
+
+   
+
+    else
+        p #[strong Are you sure that you want to delete this developer: ]
+
+            form(method="POST")
+                div.form-group
+                    input.form-control(type= "hidden", name= "developer_id", id= "developer_id", value=developer.id )
+                    
+                button.btn.btn-primary(type="submit") Delete
+

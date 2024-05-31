@@ -49,6 +49,14 @@ router.get("/developers", developer_controller.list_developers);
 
 router.get("/developer/:id", developer_controller.developer_detail);
 
+router.get("/platform/create", platform_controller.platform_form_get);
+
+router.post("/platform/create", platform_controller.platform_form_post);
+
+router.get("/platform/:id/delete", platform_controller.platform_delete_get);
+
+router.post("/platform/:id/delete", platform_controller.platform_delete_post);
+
 router.get("/platforms", platform_controller.list_platforms);
 
 router.get("/platform/:id", platform_controller.platform_detail);

@@ -91,3 +91,41 @@ exports.developer_form_post = [
     }
   }),
 ];
+
+exports.developer_delete_get = asyncHandler(async (req, res, next) => {
+  const [developer, allGamesDeveloper] = await Promise.all([
+    Developer.findById(req.params.id).exec(),
+    Game.find({ developer: req.params.id }).exec(),
+  ]);
+
+  if (developer === null) {
+    const err = new Error("Developer was not found.");
+    err.status = 404;
+    return next(err);
+  }
+
+  res.render("developer_delete", {
+    title: "Delete Developer",
+    developer: developer,
+    list_games: allGamesDeveloper,
+  });
+});
+
+exports.developer_delete_post = asyncHandler(async (req, res, next) => {
+  const [developer, allGamesDeveloper] = await Promise.all([
+    Developer.findById(req.params.id).exec(),
+    Game.find({ developer: req.params.id }).exec(),
+  ]);
+
+  if (allGamesDeveloper > 0) {
+    res.render("developer_delete", {
+      title: "Delete Developer",
+      developer: developer,
+      list_games: allGamesDeveloper,
+    });
+    return;
+  } else {
+    await Developer.findByIdAndDelete(req.body.developer_id);
+    res.redirect("/catalog/developers");
+  }
+});

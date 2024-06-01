@@ -96,6 +96,15 @@ router.get("/genres", genre_controller.list_genres);
 
 router.get("/genre/:id", genre_controller.genre_detail);
 
+router.post(
+  "/gameinstance/create",
+  gameinstance_controller.gameinstance_form_post
+);
+router.get(
+  "/gameinstance/create",
+  gameinstance_controller.gameinstance_form_get
+);
+
 router.get(
   "/gameinstance/:id/delete",
   gameinstance_controller.gameinstance_delete_get
@@ -106,15 +115,15 @@ router.post(
   gameinstance_controller.gameinstance_delete_post
 );
 
-router.post(
-  "/gameinstance/create",
-  gameinstance_controller.gameinstance_form_post
-);
 router.get(
-  "/gameinstance/create",
-  gameinstance_controller.gameinstance_form_get
+  "/gameinstance/:id/update",
+  gameinstance_controller.gameinstance_update_get
 );
 
+router.post(
+  "/gameinstance/:id/update",
+  gameinstance_controller.gameinstance_update_post
+);
 router.get("/gameinstances", gameinstance_controller.list_gameinstances);
 
 router.get("/gameinstance/:id", gameinstance_controller.gameinstance_detail);

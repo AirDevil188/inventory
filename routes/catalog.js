@@ -38,6 +38,13 @@ router.post(
   publisher_controller.publisher_delete_post
 );
 
+router.get("/publisher/:id/update", publisher_controller.publisher_update_get);
+
+router.post(
+  "/publisher/:id/update",
+  publisher_controller.publisher_update_post
+);
+
 router.get("/publisher/:id", publisher_controller.publisher_detail);
 
 router.get("/publishers", publisher_controller.list_publishers);

@@ -8,7 +8,7 @@ block content
     p #[strong Developer: ]
         a(href=`${game.developer.url}`) !{game.developer.name} 
     p #[strong Game Summary: ] !{game.summary}
-    p #[strong Release Date: ] !{game.date_of_release}
+    p #[strong Release Date: ] !{game.date_of_release_formatted}
     p #[strong ESRB Rating: ] !{game.esrb_rating}
     p #[strong Platform: ]
         each val in game.platform
@@ -28,3 +28,6 @@ block content
 
     else
         p There are no copies!
+
+    a(href=game.url+"/delete") Delete Game
+     a(href=game.url+"/update") Update Game

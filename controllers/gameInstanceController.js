@@ -51,6 +51,7 @@ exports.gameinstance_form_post = [
       game: req.body.gameinstance_game,
       platform: req.body.gameinstance_platform,
       status: req.body.gameinstance_status,
+      due_back: req.body.gameinstance_due_back,
     });
 
     if (!errors.isEmpty()) {
@@ -86,3 +87,62 @@ exports.gameinstance_delete_post = asyncHandler(async (req, res, next) => {
   await GameInstance.findByIdAndDelete(req.body.gameinstance_id);
   res.redirect("/catalog/gameinstances");
 });
+
+exports.gameinstance_update_get = asyncHandler(async (req, res, next) => {
+  const [gameinstance, allGames] = await Promise.all([
+    GameInstance.findById(req.params.id).populate("game").exec(),
+    Game.find().sort({ title: 1 }).exec(),
+  ]);
+
+  if (gameinstance === null) {
+    const err = new Error("Gameinstance was not found.");
+    err.status = 404;
+    return next(err);
+  }
+
+  console.log(gameinstance.game.id);
+
+  res.render("gameinstance_form", {
+    title: "Update GameInstance",
+    gameinstance: gameinstance,
+    list_games: allGames,
+  });
+});
+
+exports.gameinstance_update_post = [
+  body("gameinstance_platform", "Platform must not be empty.")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req);
+    const gameinstance = new GameInstance({
+      game: req.body.gameinstance_game,
+      platform: req.body.gameinstance_platform,
+      status: req.body.gameinstance_status,
+      due_back: req.body.gameinstance_due_back,
+      _id: req.params.id,
+    });
+
+    if (!errors.isEmpty()) {
+      const allGames = await Game.find().sort({ title: 1 }).exec();
+
+      res.render("gameinstance_form", {
+        title: "Update GameInstance",
+        gameinstance: gameinstance,
+        list_games: allGames,
+        errors: errors.array(),
+      });
+      return;
+    } else {
+      const updatedGameInstance = await GameInstance.findByIdAndUpdate(
+        req.params.id,
+        gameinstance,
+        {}
+      );
+      console.log(updatedGameInstance);
+      res.redirect(updatedGameInstance.url);
+    }
+  }),
+];

@@ -100,3 +100,48 @@ exports.genre_delete_post = asyncHandler(async (req, res, next) => {
     res.redirect("/catalog/genres");
   }
 });
+
+exports.genre_update_get = asyncHandler(async (req, res, next) => {
+  const genre = await Genre.findById(req.params.id);
+
+  if (genre === null) {
+    const err = new Error("Genre was not found.");
+    err.status = 404;
+    next(err);
+  }
+  res.render("genre_form", {
+    title: "Update Form",
+    genre: genre,
+  });
+});
+
+exports.genre_update_post = [
+  body("genre_name", "Genre name must not be empty.")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req);
+    const genre = new Genre({
+      name: req.body.genre_name,
+      _id: req.params.id,
+    });
+
+    if (!errors.isEmpty()) {
+      res.render("genre_form", {
+        title: "Update Form",
+        genre: genre,
+        errors: errors.array(),
+      });
+      return;
+    } else {
+      const updatedGenre = await Genre.findByIdAndUpdate(
+        req.params.id,
+        genre,
+        {}
+      );
+      res.redirect(updatedGenre.url);
+    }
+  }),
+];

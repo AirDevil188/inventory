@@ -65,8 +65,9 @@ exports.game_detail = asyncHandler(async (req, res, next) => {
 });
 
 exports.game_form_get = asyncHandler(async (req, res, next) => {
-  const [allPublishers, allDevelopers, allPlatforms, allGenres] =
+  const [game, allPublishers, allDevelopers, allPlatforms, allGenres] =
     await Promise.all([
+      Game.find().sort({ name: 1 }).populate("developer").exec(),
       Publisher.find().sort({ name: 1 }).exec(),
       Developer.find().sort({ name: 1 }).exec(),
       Platform.find().sort({ name: 1 }).exec(),
@@ -78,7 +79,9 @@ exports.game_form_get = asyncHandler(async (req, res, next) => {
     list_developers: allDevelopers,
     list_platforms: allPlatforms,
     list_genres: allGenres,
+    game: game,
   });
+  console.log(allDevelopers);
 });
 
 exports.game_form_post = [
@@ -151,6 +154,153 @@ exports.game_form_post = [
     } else {
       await game.save();
       res.redirect(game.url);
+    }
+  }),
+];
+
+exports.game_delete_get = asyncHandler(async (req, res, next) => {
+  const [game, allGameinstace] = await Promise.all([
+    Game.findById(req.params.id).exec(),
+    GameInstance.find({ game: req.params.id }).exec(),
+  ]);
+
+  if (game === null) {
+    const err = new Error("Game was not found.");
+    err.status = 404;
+    return next(err);
+  }
+  res.render("game_delete", {
+    title: "Delete Game",
+    game: game,
+    list_gameinstances: allGameinstace,
+  });
+});
+
+exports.game_delete_post = asyncHandler(async (req, res, next) => {
+  const [game, allGameinstace] = await Promise.all([
+    Game.findById(req.params.id).exec(),
+    GameInstance.find({ game: req.params.id }).exec(),
+  ]);
+
+  if (allGameinstace.length > 0) {
+    res.render("delete_game", {
+      title: "Delete Game",
+      game: game,
+      list_gameinstances: allGameinstace,
+    });
+    return;
+  } else {
+    await Game.findByIdAndDelete(req.body.game_id);
+    res.redirect("/catalog/games");
+  }
+});
+
+exports.game_update_get = asyncHandler(async (req, res, next) => {
+  const [game, allGamePublisher, allGameDeveloper, gamePlatform, gameGenre] =
+    await Promise.all([
+      Game.findById(req.params.id).exec(),
+      Publisher.find().sort({ name: 1 }).exec(),
+      Developer.find().sort({ name: 1 }).exec(),
+      Platform.find().sort({ name: 1 }).exec(),
+      Genre.find().sort({ name: 1 }).exec(),
+    ]);
+
+  gameGenre.forEach((genre) => {
+    if (game.genre.includes(genre._id)) {
+      genre.checked = true;
+    }
+  });
+
+  gamePlatform.forEach((platform) => {
+    if (game.platform.includes(platform._id)) {
+      platform.checked = true;
+    }
+  });
+
+  if (game === null) {
+    const err = new Error("Game was not found.");
+    err.status = 404;
+    return next(err);
+  }
+  res.render("game_form", {
+    title: "Update Game",
+    game: game,
+    list_publishers: allGamePublisher,
+    list_developers: allGameDeveloper,
+    list_platforms: gamePlatform,
+    list_genres: gameGenre,
+  });
+});
+
+exports.game_update_post = [
+  body("game_title", "Title must not be empty")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+
+  body("game_publisher", "Publisher must not be empty.")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+
+  body("game_developer", "Developer must not be empty")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+
+  body("game_summary", "Game summary must not be empty.")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+
+  body("game_release_date", "Game must have a release date.")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+
+  body("game_esrb_rating", "Game ESRB Rating must not be empty.")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+
+  body("game_genre", "Genre must not be empty").notEmpty().escape(),
+
+  body("game_platform", "Platform must not be empty").notEmpty().escape(),
+
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req);
+    const game = new Game({
+      title: req.body.game_title,
+      publisher: req.body.game_publisher,
+      developer: req.body.game_developer,
+      summary: req.body.game_summary,
+      esrb_rating: req.body.game_esrb_rating,
+      date_of_release: req.body.game_release_date,
+      platform: req.body.game_platform,
+      genre: req.body.game_genre,
+      _id: req.params.id,
+    });
+    const [allGamePublisher, allGameDeveloper, gamePlatform, gameGenre] =
+      await Promise.all([
+        Publisher.find().sort({ name: 1 }).exec(),
+        Developer.find().sort({ name: 1 }).exec(),
+        Platform.find().sort({ name: 1 }).exec(),
+        Genre.find().sort({ name: 1 }).exec(),
+      ]);
+
+    if (!errors.isEmpty()) {
+      res.render("game_form", {
+        title: "Update Game",
+        list_publishers: allGamePublisher,
+        list_developers: allGameDeveloper,
+        list_platforms: gamePlatform,
+        list_genres: gameGenre,
+        errors: errors.array(),
+      });
+      return;
+    } else {
+      const updatedGame = await Game.findByIdAndUpdate(req.params.id, game, {});
+      res.redirect(updatedGame.url);
     }
   }),
 ];

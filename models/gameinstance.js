@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-
+const { DateTime } = require("luxon");
 const Schema = mongoose.Schema;
 
 const GameInstanceSchema = new Schema({
@@ -17,4 +17,13 @@ GameInstanceSchema.virtual("url").get(function () {
   return `/catalog/gameinstance/${this._id}`;
 });
 
+GameInstanceSchema.virtual("due_back_formatted").get(function () {
+  return this.due_back
+    ? DateTime.fromJSDate(this.due_back).toLocaleString(DateTime.DATE_MED)
+    : "";
+});
+
+GameInstanceSchema.virtual("due_back_default").get(function () {
+  return this.due_back ? DateTime.fromJSDate(this.due_back).toISODate() : "";
+});
 module.exports = mongoose.model("GameInstance", GameInstanceSchema);

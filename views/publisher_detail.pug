@@ -4,8 +4,9 @@ block content
 
     h3 #[strong Publisher Title: ] !{publisher.name}
     p #[strong Location: ]  !{publisher.location}
-    p #[strong Date of Foundation: ] !{publisher.date_of_foundation}
-    p #[strong Date of Closing: ] !{publisher.date_of_closing}
+    p #[strong Date of Foundation: ] !{publisher.date_of_foundation_formatted}
+    if publisher.date_of_closing
+        p #[strong Date of Closing: ] !{publisher.date_of_closing_formatted}
 
 
     if all_games.length > 0 
@@ -20,3 +21,4 @@ block content
 
 
     a(href=publisher.url+"/delete") Delete Publisher
+     a(href=publisher.url+"/update") Update Publisher

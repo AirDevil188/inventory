@@ -7,19 +7,19 @@ block content
     form(method="POST") 
         div.form-group
             label(for="publisher_name").form-label #[strong Name: ]
-            input(type="text" id= "publisher_name", name="publisher_name", required).form-control
+            input(type="text" id= "publisher_name", name="publisher_name", value=(undefined===publisher ? "" : publisher.name) required).form-control
 
         div.form-group
             label(for="publisher_location").form-label #[strong Location: ]
-            input(type="text", id="publisher_location", name="publisher_location" required).form-control
+            input(type="text", id="publisher_location", name="publisher_location" value=(undefined===publisher ? "" : publisher.location) required).form-control
 
         div.form-group
             label(for="publisher_date_of_foundation").form-label #[strong Date of Foundation: ]
-            input(type="date", id="publisher_date_of_foundation", name="publisher_date_of_foundation" required).form-control 
+            input(type="date", id="publisher_date_of_foundation", name="publisher_date_of_foundation" value=(undefined===publisher ? "" : publisher.date_of_foundation_default) required).form-control 
 
         div.form-group
             label(for="publisher_date_of_closing").form-label #[strong Date of Closing: ]
-            input(type="date", id="publisher_date_of_closing", name="publisher_date_of_closing").form-control
+            input(type="date", id="publisher_date_of_closing", name="publisher_date_of_closing" value=(undefined===publisher ? "" : publisher.date_of_closing_default)).form-control
 
         div.form-group
         button(type="submit").btn.btn-primary Submit

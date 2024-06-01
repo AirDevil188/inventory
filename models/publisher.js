@@ -1,3 +1,4 @@
+const { DateTime } = require("luxon");
 const mongoose = require("mongoose");
 
 const Schema = mongoose.Schema;
@@ -27,4 +28,17 @@ PublisherSchema.virtual("date_of_foundation_default").get(function () {
     : "";
 });
 
+PublisherSchema.virtual("date_of_closing_formatted").get(function () {
+  return this.date_of_foundation
+    ? DateTime.fromJSDate(this.date_of_foundation).toLocaleString(
+        DateTime.DATE_MED
+      )
+    : "";
+});
+
+PublisherSchema.virtual("date_of_closing_default").get(function () {
+  return this.date_of_foundation
+    ? DateTime.fromJSDate(this.date_of_foundation).toISODate()
+    : "";
+});
 module.exports = mongoose.model("Publisher", PublisherSchema);

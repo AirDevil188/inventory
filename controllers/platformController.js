@@ -94,3 +94,49 @@ exports.platform_delete_post = asyncHandler(async (req, res, next) => {
     res.redirect("/catalog/platforms");
   }
 });
+
+exports.platform_update_get = asyncHandler(async (req, res, next) => {
+  const platform = await Platform.findById(req.params.id);
+
+  if (platform === null) {
+    const err = new Error("Platform was not found.");
+    err.status = 404;
+    return next(err);
+  }
+
+  res.render("platform_form", {
+    title: "Update Platform",
+    platform: platform,
+  });
+});
+
+exports.platform_update_post = [
+  body("platform_name", "Platform name must not be empty.")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req);
+    const platform = new Platform({
+      name: req.body.platform_name,
+      _id: req.params.id,
+    });
+
+    if (!errors.isEmpty()) {
+      res.render("platform_form", {
+        title: "Update Platform",
+        platform: platform,
+        errors: errors.array(),
+      });
+      return;
+    } else {
+      const updatedPlatform = await Platform.findByIdAndUpdate(
+        req.params.id,
+        platform,
+        {}
+      );
+      res.redirect(updatedPlatform.url);
+    }
+  }),
+];

@@ -8,6 +8,7 @@ block content
         a(href=`${gameinstance.game.url}`)  !{gameinstance.game.title}
     p #[strong Platform: ]  !{gameinstance.platform}
     p #[strong Status: ] !{gameinstance.status}
+    p #[strong Due Back: ] !{gameinstance.due_back_formatted}
 
     a(href=gameinstance.url+"/delete") Delete GameInstance
     a(href=gameinstance.url+"/update") Update GameInstance  

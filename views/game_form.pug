@@ -7,48 +7,76 @@ block content
     form(method= "POST")
         div.form-group
              label(for="game_title").form-label #[strong Game Title: ]
-             input(type= "text", id="game_title" name= "game_title" required).form-control
+             input(type= "text", id="game_title" name= "game_title" value=(undefined===game ? "" : game.title) required).form-control
         div.form-group
             label(for="game_developer").form-label #[strong Developer: ]
             select#game_developer.form-control(name="game_developer",)
                 for developer in list_developers
                     if developer
-                            option(value= developer._id) #{developer.name}
+                        if game.developer
+                            if developer.id == game.developer._id
+                                option(value = developer._id selected) #{developer.name}
+                            else
+                                option(value = developer._id) #{developer.name}
+                        
+                        else 
+                            option(value = developer._id) #{developer.name}
 
         div.form-group
             label(for="game_publisher").form-label #[strong Publisher: ]
             select#game_publisher.form-control(name="game_publisher")
                 for publisher in list_publishers
                     if publisher
-                        option(value = publisher._id) #{publisher.name}
+                        if game.publisher
+                            if publisher.id == game.publisher._id
+                                option(value = publisher._id selected) #{publisher.name}
+                            else
+                                option(value = publisher._id) #{publisher.name}
+                        
+                        else 
+                            option(value = publisher._id) #{publisher.name}
 
-        div.form-group 
+        div.form-group
             label(for="game_summary").form-label #[strong Summary: ]
-            textarea.form-control(id= "game_textarea" rows= 3 name= "game_summary" required)
+                if (game.summary === undefined)
+                    textarea.form-control(id= "game_textarea" rows= 3 name= "game_summary" required)
+                else
+                    textarea.form-control(id= "game_textarea" rows= 3 name= "game_summary" required) !{game.summary}
+
 
         div.form-group
             label(for= "game_esrb_rating").form-label #[strong ESRB Rating: ] 
-            input(type= "text", id="game_esrb_rating" name= "game_esrb_rating").form-control
+            input(type= "text", id="game_esrb_rating" name= "game_esrb_rating" value=(undefined===game ? "" : game.esrb_rating)).form-control
 
         div.form-group
             label(for="game_release_date").form-label #[strong Date of Release: ]
-            input(type= "date", id="game_release_date" name= "game_release_date" required).form-control
+            input(type= "date", id="game_release_date" name= "game_release_date" value=(undefined === game ? "" : game.date_of_release_default ) required).form-control
 
         div.form-group
             div.form-check.form-check-inline
                 label(for= "game_platform").form-label #[strong Platform: ]
                     for platform, index in list_platforms
                         if platform
-                            label.form-check-label(for= platform._id)  !{platform.name}
-                            input.form-check-input(type="checkbox" id= platform._id value= platform._id name="game_platform" )
+                            if platform.checked
+                                label.form-check-label(for= platform._id)  !{platform.name}
+                                input.form-check-input(type="checkbox" id= platform._id value= platform._id name="game_platform" checked)
+                            
+                            else 
+                                label.form-check-label(for= platform._id)  !{platform.name}
+                                input.form-check-input(type="checkbox" id= platform._id value= platform._id name="game_platform" )
 
         div.form-group
             div.form-check.form-check-inline
                 label(for= "game_genre").form-label #[strong Genre: ]
                     for genre, index in list_genres
                         if genre
-                            label.form-check-label(for= genre._id) !{genre.name}
-                            input.form-check-input(type="checkbox" id= genre._id value= genre._id name= "game_genre" )
+                            if  genre.checked 
+                                label.form-check-label(for= genre._id) !{genre.name}
+                                input.form-check-input(type="checkbox" id= genre._id value= genre._id name= "game_genre" checked )
+
+                            else 
+                                label.form-check-label(for= genre._id) !{genre.name}
+                                input.form-check-input(type="checkbox" id= genre._id value= genre._id name= "game_genre" )
 
         div.form-group
         button(type="submit").btn.btn-primary Submit

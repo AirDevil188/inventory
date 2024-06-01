@@ -5,7 +5,7 @@ block content
         form(method="POST")
             div.form-group
                 label(for="platform_name").form-label #[strong Name: ]
-                input(type="text" id="platform_name" name="platform_name").form-control
+                input(type="text" id="platform_name" name="platform_name" value=(undefined===platform ? "" : platform.name)).form-control
 
             div.form-group
                     button.btn.btn-primary(type="submit") Submit

@@ -9,17 +9,34 @@ block content
              label(for="gameinstance_game").form-label #[strong Game: ]
              select#gameinstance_game(name="gameinstance_game" ).form-control
                 each game in list_games
-                    option(value=game._id id= game._id) !{game.title}
+                    if gameinstance
+                        if gameinstance.game
+                            if (game.id == gameinstance.game.id)
+                                option(value=game._id id= game._id selected) !{game.title}
+                            else
+                                option(value=game._id id= game._id) !{game.title}
+                        
+                    else
+                        option(value=game._id id= game._id) !{game.title}
         div.form-group
             label(for="gameinstance_platform").form-label #[strong Platform: ]
-            input(type="text", name="gameinstance_platform", id="gameinstance_platform" required).form-control
+            input(type="text", name="gameinstance_platform", id="gameinstance_platform" value=(undefined===gameinstance ? "" : gameinstance.platform) required).form-control
 
         div.form-group
             label(for="gameinstance_status").form-label #[strong Status: ]
             select#gameinstance_status(name="gameinstance_status").form-control
-                option(value="Maintenance") Maintenance
-                option(value="Available") Available
-                option(value="Loaned") Loaned 
+                each val in ["Maintenance", "Available", "Loaned"]
+                    if gameinstance
+                        if gameinstance.status == val
+                            option(value=gameinstance.status selected) !{val}
+                        else
+                            option(value=val) !{val}
+                    else
+                        option(value=val) !{val}
+
+        div.form-group
+            label(for="gameinstance_due_back").form-label #[strong Due Back: ]
+            input(type="date", name="gameinstance_due_back", id="gameinstance_due_back" value=(undefined === gameinstance ? "" : gameinstance.due_back_default)).form-control 
 
 
         button.btn.btn-primary(type="submit") Submit

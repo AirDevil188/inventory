@@ -122,3 +122,62 @@ exports.publisher_delete_post = asyncHandler(async (req, res, next) => {
     res.redirect("/catalog/publishers");
   }
 });
+
+exports.publisher_update_get = asyncHandler(async (req, res, next) => {
+  const publisher = await Publisher.findById(req.params.id).exec();
+
+  if (publisher === null) {
+    const err = new Error("Publisher was not found.");
+    err.status = 404;
+    next(err);
+  }
+  res.render("publisher_form", {
+    title: "Update Publisher",
+    publisher: publisher,
+  });
+});
+
+exports.publisher_update_post = [
+  body("publisher_name", "Publisher name must not be empty.")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+  body("publisher_location", "Publisher location must not be empty.")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+  body(
+    "publisher_date_of_foundation",
+    "Publisher must have a date of foundation."
+  )
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req);
+    const publisher = new Publisher({
+      name: req.body.publisher_name,
+      location: req.body.publisher_location,
+      date_of_foundation: req.body.publisher_date_of_foundation,
+      date_of_closing: req.body.publisher_date_of_closing,
+      _id: req.params.id,
+    });
+
+    if (!errors.isEmpty()) {
+      res.render("publisher_form", {
+        title: "Update Publisher",
+        publisher: publisher,
+        errors: errors.array(),
+      });
+      return;
+    } else {
+      const updatedPublisher = await Publisher.findByIdAndUpdate(
+        req.params.id,
+        publisher,
+        {}
+      );
+      res.redirect(updatedPublisher.url);
+    }
+  }),
+];

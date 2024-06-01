@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { DateTime } = require("luxon");
 
 const Schema = mongoose.Schema;
 
@@ -12,6 +13,20 @@ const DeveloperSchema = new Schema({
 
 DeveloperSchema.virtual("url").get(function () {
   return `/catalog/developer/${this._id}`;
+});
+
+DeveloperSchema.virtual("date_of_foundation_formatted").get(function () {
+  return this.date_of_foundation
+    ? DateTime.fromJSDate(this.date_of_foundation).toLocaleString(
+        DateTime.DATE_MED
+      )
+    : "";
+});
+
+DeveloperSchema.virtual("date_of_foundation_default").get(function () {
+  return this.date_of_foundation
+    ? DateTime.fromJSDate(this.date_of_foundation).toISODate()
+    : "";
 });
 
 module.exports = mongoose.model("Developer", DeveloperSchema);

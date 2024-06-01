@@ -13,4 +13,18 @@ PublisherSchema.virtual("url").get(function () {
   return `/catalog/publisher/${this._id}`;
 });
 
+PublisherSchema.virtual("date_of_foundation_formatted").get(function () {
+  return this.date_of_foundation
+    ? DateTime.fromJSDate(this.date_of_foundation).toLocaleString(
+        DateTime.DATE_MED
+      )
+    : "";
+});
+
+PublisherSchema.virtual("date_of_foundation_default").get(function () {
+  return this.date_of_foundation
+    ? DateTime.fromJSDate(this.date_of_foundation).toISODate()
+    : "";
+});
+
 module.exports = mongoose.model("Publisher", PublisherSchema);

@@ -5,8 +5,8 @@ block content
 
     form(method="POST")
         div.form-group
-             label(for="game_genre").form-label #[strong Genre Name: ]
-             input(type= "text", id="game_genre" name= "game_genre" required).form-control
+             label(for="genre_name").form-label #[strong Genre Name: ]
+             input(type= "text", id="genre_name" name= "genre_name" required value=(undefined===genre ?  "" : genre.name)).form-control
 
         div.form-group
         button.btn.btn-primary(type="submit") Submit

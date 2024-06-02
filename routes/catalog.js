@@ -60,9 +60,16 @@ router.post(
   developer_controller.developer_delete_post
 );
 
-router.get("/developers", developer_controller.list_developers);
+router.get("/developer/:id/update", developer_controller.developer_update_get);
+
+router.post(
+  "/developer/:id/update",
+  developer_controller.developer_update_post
+);
 
 router.get("/developer/:id", developer_controller.developer_detail);
+
+router.get("/developers", developer_controller.list_developers);
 
 router.get("/platform/create", platform_controller.platform_form_get);
 

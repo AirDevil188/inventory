@@ -29,4 +29,18 @@ DeveloperSchema.virtual("date_of_foundation_default").get(function () {
     : "";
 });
 
+DeveloperSchema.virtual("date_of_closing_formatted").get(function () {
+  return this.date_of_closing
+    ? DateTime.fromJSDate(this.date_of_closing).toLocaleString(
+        DateTime.DATE_MED
+      )
+    : "";
+});
+
+DeveloperSchema.virtual("date_of_closing_default").get(function () {
+  return this.date_of_closing
+    ? DateTime.fromJSDate(this.date_of_closing).toISODate()
+    : "";
+});
+
 module.exports = mongoose.model("Developer", DeveloperSchema);

@@ -7,26 +7,32 @@ block content
     form(method="POST") 
         div.form-group
             label(for="developer_name").form-label #[strong Name: ]
-            input(type="text" id= "developer_name", name="developer_name", required).form-control
+            input(type="text" id= "developer_name", name="developer_name", value=(undefined === developer ? "" : developer.name) required).form-control
 
         div.form-group
             label(for="developer_publisher").form-label #[strong Publisher: ]
             select#developer_publisher(name="developer_publisher").form-control
                 each publisher, index in list_publishers
-                    if publisher
+                    if developer
+                        if developer.publisher
+                            if developer.publisher.id == publisher.id
+                                option(value=publisher.id selected) !{publisher.name}
+                            else 
+                                option(value=publisher.id) !{publisher.name}
+                    else
                         option(value=publisher.id) !{publisher.name} 
 
         div.form-group
             label(for="developer_location").form-label #[strong Location: ]
-            input(type="text", id="developer_location", name="developer_location" required).form-control
+            input(type="text", id="developer_location", name="developer_location" value=(undefined === developer ? "" : developer.location ) required).form-control
 
         div.form-group
             label(for="developer_date_of_foundation").form-label #[strong Date of Foundation: ]
-            input(type="date", id="developer_date_of_foundation", name="developer_date_of_foundation" required).form-control 
+            input(type="date", id="developer_date_of_foundation", name="developer_date_of_foundation" value=(undefined === developer ? "" : developer.date_of_foundation_default) required).form-control 
 
         div.form-group
             label(for="developer_date_of_closing").form-label #[strong Date of Closing: ]
-            input(type="date", id="developer_date_of_closing", name="developer_date_of_closing").form-control
+            input(type="date", id="developer_date_of_closing", name="developer_date_of_closing" value=(undefined === developer ? "" : developer.date_of_closing_default)).form-control
 
         div.form-group
         button(type="submit").btn.btn-primary Submit

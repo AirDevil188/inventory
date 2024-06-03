@@ -40,8 +40,6 @@ exports.developer_detail = asyncHandler(async (req, res, next) => {
 exports.developer_form_get = asyncHandler(async (req, res, next) => {
   const allPublishers = await Publisher.find().sort({ name: 1 }).exec();
 
-  console.log(allPublishers);
-
   res.render("developer_form", {
     title: "Create Developer",
     list_publishers: allPublishers,
@@ -141,8 +139,6 @@ exports.developer_update_get = asyncHandler(async (req, res, next) => {
     err.status = 404;
     return next(err);
   }
-  console.log("ss");
-  console.log(developer.publisher._id, developer.publisher.id);
 
   res.render("developer_form", {
     title: "Update Developer",

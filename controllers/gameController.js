@@ -8,9 +8,9 @@ const Platform = require("../models/platform");
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
 const multer = require("multer");
+const cloudinary = require("cloudinary").v2;
 const dotenv = require("dotenv");
 dotenv.config();
-const cloudinary = require("cloudinary").v2;
 cloudinary.config().cloud_name;
 
 cloudinary.config({
@@ -254,6 +254,10 @@ exports.game_update_get = asyncHandler(async (req, res, next) => {
 });
 
 exports.game_update_post = [
+  body("master_password", "Incorrect password")
+    .matches(process.env.MASTER_PASSWORD)
+    .escape(),
+
   body("game_title", "Title must not be empty")
     .trim()
     .isLength({ min: 1 })
@@ -331,6 +335,18 @@ exports.game_update_post = [
         Platform.find().sort({ name: 1 }).exec(),
         Genre.find().sort({ name: 1 }).exec(),
       ]);
+
+      gameGenre.forEach((genre) => {
+        if (game.genre.includes(genre._id)) {
+          genre.checked = true;
+        }
+      });
+
+      gamePlatform.forEach((platform) => {
+        if (game.platform.includes(platform._id)) {
+          platform.checked = true;
+        }
+      });
 
       res.render("game_form", {
         title: "Update Game",

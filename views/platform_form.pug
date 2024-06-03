@@ -8,4 +8,8 @@ block content
                 input(type="text" id="platform_name" name="platform_name" value=(undefined===platform ? "" : platform.name)).form-control
 
             div.form-group
+            label(for="master_password").form-label #[strong Password: ]
+            input(type="password" id="master_password" name="master_password").form-control
+
+            div.form-group
                     button.btn.btn-primary(type="submit") Submit

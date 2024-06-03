@@ -10,7 +10,6 @@ const developer_controller = require("../controllers/developerController");
 const platform_controller = require("../controllers/platformController");
 const genre_controller = require("../controllers/genreController");
 const gameinstance_controller = require("../controllers/gameInstanceController");
-const publisher = require("../models/publisher");
 
 router.get("/", game_controller.index);
 

@@ -4,6 +4,8 @@ const Developer = require("../models/developer");
 
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
+const dotenv = require("dotenv");
+dotenv.config();
 
 exports.list_publishers = asyncHandler(async (req, res, next) => {
   const allPublishers = await Publisher.find().sort("name");
@@ -138,6 +140,10 @@ exports.publisher_update_get = asyncHandler(async (req, res, next) => {
 });
 
 exports.publisher_update_post = [
+  body("master_password", "Incorrect password")
+    .matches(process.env.MASTER_PASSWORD)
+    .escape(),
+
   body("publisher_name", "Publisher name must not be empty.")
     .trim()
     .isLength({ min: 1 })

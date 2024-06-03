@@ -3,6 +3,8 @@ const Platform = require("../models/platform");
 
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
+const dotenv = require("dotenv");
+dotenv.config();
 
 exports.list_platforms = asyncHandler(async (req, res, next) => {
   const allPlatforms = await Platform.find().sort({ name: 1 }).exec();
@@ -114,6 +116,10 @@ exports.platform_update_post = [
   body("platform_name", "Platform name must not be empty.")
     .trim()
     .isLength({ min: 1 })
+    .escape(),
+
+  body("master_password", "Incorrect password")
+    .matches(process.env.MASTER_PASSWORD)
     .escape(),
 
   asyncHandler(async (req, res, next) => {

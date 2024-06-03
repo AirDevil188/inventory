@@ -8,6 +8,13 @@ block content
              label(for="genre_name").form-label #[strong Genre Name: ]
              input(type= "text", id="genre_name" name= "genre_name" required value=(undefined===genre ?  "" : genre.name)).form-control
 
+        label(for="master_password").form-label #[strong Password: ]
+        input(type="password" id="master_password" name="master_password").form-control
+
         div.form-group
         button.btn.btn-primary(type="submit") Submit
 
+    if errors 
+            each error in errors 
+                div.alert.alert-danger(role = "alert")
+                    p !{error.msg}

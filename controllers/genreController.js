@@ -4,6 +4,9 @@ const Genre = require("../models/genre");
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
 
+const dotenv = require("dotenv");
+dotenv.config();
+
 exports.list_genres = asyncHandler(async (req, res, next) => {
   const allGenres = await Genre.find().sort("name").exec();
   console.log(allGenres);
@@ -33,6 +36,7 @@ exports.genre_detail = asyncHandler(async (req, res, next) => {
 });
 
 exports.genre_form_get = asyncHandler(async (req, res, next) => {
+  console.log(process.env.MASTER_PASSWORD);
   res.render("genre_form", {
     title: "Create Genre",
   });
@@ -109,6 +113,7 @@ exports.genre_update_get = asyncHandler(async (req, res, next) => {
     err.status = 404;
     next(err);
   }
+
   res.render("genre_form", {
     title: "Update Form",
     genre: genre,
@@ -119,6 +124,10 @@ exports.genre_update_post = [
   body("genre_name", "Genre name must not be empty.")
     .trim()
     .isLength({ min: 1 })
+    .escape(),
+
+  body("master_password", "Inccorect password")
+    .matches(process.env.MASTER_PASSWORD)
     .escape(),
 
   asyncHandler(async (req, res, next) => {
@@ -145,3 +154,25 @@ exports.genre_update_post = [
     }
   }),
 ];
+
+exports.password_genre_get = asyncHandler(async (req, res, next) => {
+  res.render("password_form", {
+    title: "Password Login",
+  });
+  console.log(process.env.MASTER_PASSWORD);
+  console.log(req.originalUrl);
+});
+
+exports.password_genre_post = asyncHandler(async (req, res, next) => {
+  console.log(req.body.master_password);
+  console.log(req.originalUrl);
+
+  if (req.body.master_password === process.env.MASTER_PASSWORD) {
+    res.render("genre_form", {
+      title: "Password Login",
+    });
+  } else
+    res.render("password_form", {
+      title: "Password Login",
+    });
+});

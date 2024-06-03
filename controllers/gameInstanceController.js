@@ -3,6 +3,8 @@ const Game = require("../models/game");
 
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
+const dotenv = require("dotenv");
+dotenv.config();
 
 exports.list_gameinstances = asyncHandler(async (req, res, next) => {
   const allGameinstace = await GameInstance.find().populate("game").exec();
@@ -112,6 +114,9 @@ exports.gameinstance_update_post = [
     .trim()
     .isLength({ min: 1 })
     .escape(),
+  body("master_password", "Incorrect password")
+    .matches(process.env.MASTER_PASSWORD)
+    .escape(),
 
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req);
@@ -122,6 +127,9 @@ exports.gameinstance_update_post = [
       due_back: req.body.gameinstance_due_back,
       _id: req.params.id,
     });
+
+    if (req.body.master_password === process.env.MASTER_PASSWORD) {
+    }
 
     if (!errors.isEmpty()) {
       const allGames = await Game.find().sort({ title: 1 }).exec();

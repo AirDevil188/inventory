@@ -35,7 +35,11 @@ block content
 
         div.form-group
             label(for="gameinstance_due_back").form-label #[strong Due Back: ]
-            input(type="date", name="gameinstance_due_back", id="gameinstance_due_back" value=(undefined === gameinstance ? "" : gameinstance.due_back_default)).form-control 
+            input(type="date", name="gameinstance_due_back", id="gameinstance_due_back" value=(undefined === gameinstance ? "" : gameinstance.due_back_default)).form-control
+
+        div.form-group
+            label(for="master_password").form-label #[strong Password: ]
+            input(type="password" id="master_password" name="master_password").form-control
 
 
         button.btn.btn-primary(type="submit") Submit

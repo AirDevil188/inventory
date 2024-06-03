@@ -7,6 +7,15 @@ const Platform = require("../models/platform");
 
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
+const multer = require("multer");
+const dotenv = require("dotenv");
+dotenv.config();
+const cloudinary = require("cloudinary").v2;
+cloudinary.config().cloud_name;
+
+cloudinary.config({
+  secure: true,
+});
 
 exports.index = asyncHandler(async (req, res, next) => {
   const [numGames, numPublishers, numDevelopers, numGenres, numGameInstances] =
@@ -65,23 +74,21 @@ exports.game_detail = asyncHandler(async (req, res, next) => {
 });
 
 exports.game_form_get = asyncHandler(async (req, res, next) => {
-  const [game, allPublishers, allDevelopers, allPlatforms, allGenres] =
+  const [allPublishers, allDevelopers, allPlatforms, allGenres] =
     await Promise.all([
-      Game.find().sort({ name: 1 }).populate("developer").exec(),
       Publisher.find().sort({ name: 1 }).exec(),
       Developer.find().sort({ name: 1 }).exec(),
       Platform.find().sort({ name: 1 }).exec(),
       Genre.find().sort({ name: 1 }).exec(),
     ]);
+
   res.render("game_form", {
     title: "Create Game",
     list_publishers: allPublishers,
     list_developers: allDevelopers,
     list_platforms: allPlatforms,
     list_genres: allGenres,
-    game: game,
   });
-  console.log(allDevelopers);
 });
 
 exports.game_form_post = [
@@ -121,13 +128,27 @@ exports.game_form_post = [
 
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req);
-    console.log(errors, "err");
+    const uploadImg = async () => {
+      if (req.file) {
+        const img = await cloudinary.uploader.upload(
+          req.file.path,
+          function (err) {
+            if (err instanceof multer.MulterError) {
+              err.status = 404;
+              return next(err);
+            }
+          }
+        );
+        return img.url;
+      }
+    };
 
     const game = new Game({
       title: req.body.game_title,
       publisher: req.body.game_publisher,
       developer: req.body.game_developer,
       summary: req.body.game_summary,
+      image: req.file ? await uploadImg() : "",
       esrb_rating: req.body.game_esrb_rating,
       date_of_release: req.body.game_release_date,
       platform: req.body.game_platform,
@@ -269,32 +290,55 @@ exports.game_update_post = [
 
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req);
+    const uploadImg = async () => {
+      if (req.file) {
+        const img = await cloudinary.uploader.upload(
+          req.file.path,
+          function (err) {
+            if (err instanceof multer.MulterError) {
+              err.status = 404;
+              return next(err);
+            }
+          }
+        );
+        return img.url;
+      }
+    };
     const game = new Game({
       title: req.body.game_title,
       publisher: req.body.game_publisher,
       developer: req.body.game_developer,
       summary: req.body.game_summary,
+      image: req.file ? await uploadImg() : "",
       esrb_rating: req.body.game_esrb_rating,
       date_of_release: req.body.game_release_date,
       platform: req.body.game_platform,
       genre: req.body.game_genre,
       _id: req.params.id,
     });
-    const [allGamePublisher, allGameDeveloper, gamePlatform, gameGenre] =
-      await Promise.all([
+
+    if (!errors.isEmpty()) {
+      const [
+        game,
+        allGamePublisher,
+        allGameDeveloper,
+        gamePlatform,
+        gameGenre,
+      ] = await Promise.all([
+        Game.findById(req.params.id).exec(),
         Publisher.find().sort({ name: 1 }).exec(),
         Developer.find().sort({ name: 1 }).exec(),
         Platform.find().sort({ name: 1 }).exec(),
         Genre.find().sort({ name: 1 }).exec(),
       ]);
 
-    if (!errors.isEmpty()) {
       res.render("game_form", {
         title: "Update Game",
         list_publishers: allGamePublisher,
         list_developers: allGameDeveloper,
         list_platforms: gamePlatform,
         list_genres: gameGenre,
+        game: game,
         errors: errors.array(),
       });
       return;

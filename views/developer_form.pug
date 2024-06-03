@@ -14,8 +14,7 @@ block content
             select#developer_publisher(name="developer_publisher").form-control
                 each publisher, index in list_publishers
                     if developer
-                        if developer.publisher
-                            if developer.publisher.id == publisher.id
+                            if publisher._id.toString() === developer.publisher._id.toString()
                                 option(value=publisher.id selected) !{publisher.name}
                             else 
                                 option(value=publisher.id) !{publisher.name}

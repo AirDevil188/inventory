@@ -19,10 +19,6 @@ mongoose.set("strictQuery", false);
 dotenv.config();
 const mongoDB = process.env.MONGODB_URI;
 
-console.log("mongodb link", mongoDB);
-
-// ("mongodb+srv://urosculibrk:kengur123@cluster0.5oefklu.mongodb.net/inventory?retryWrites=true&w=majority&appName=Cluster0");
-
 main().catch((err) => console.log(err));
 async function main() {
   await mongoose.connect(mongoDB);

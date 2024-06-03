@@ -100,8 +100,6 @@ exports.gameinstance_update_get = asyncHandler(async (req, res, next) => {
     return next(err);
   }
 
-  console.log(gameinstance.game.id);
-
   res.render("gameinstance_form", {
     title: "Update GameInstance",
     gameinstance: gameinstance,
@@ -141,7 +139,6 @@ exports.gameinstance_update_post = [
         gameinstance,
         {}
       );
-      console.log(updatedGameInstance);
       res.redirect(updatedGameInstance.url);
     }
   }),

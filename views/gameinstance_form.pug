@@ -10,8 +10,7 @@ block content
              select#gameinstance_game(name="gameinstance_game" ).form-control
                 each game in list_games
                     if gameinstance
-                        if gameinstance.game
-                            if (game.id == gameinstance.game.id)
+                            if (game._id.toString() === gameinstance.game._id.toString())
                                 option(value=game._id id= game._id selected) !{game.title}
                             else
                                 option(value=game._id id= game._id) !{game.title}

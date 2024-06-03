@@ -7,6 +7,7 @@ const GameSchema = new Schema({
   publisher: { type: Schema.Types.ObjectId, ref: "Publisher", required: true },
   developer: { type: Schema.Types.ObjectId, ref: "Developer", required: true },
   summary: { type: String, required: true },
+  image: { type: String },
   date_of_release: { type: Date },
   esrb_rating: { type: String, required: true },
   platform: [{ type: Schema.Types.ObjectId, ref: "Platform" }],

@@ -128,9 +128,6 @@ exports.gameinstance_update_post = [
       _id: req.params.id,
     });
 
-    if (req.body.master_password === process.env.MASTER_PASSWORD) {
-    }
-
     if (!errors.isEmpty()) {
       const allGames = await Game.find().sort({ title: 1 }).exec();
 

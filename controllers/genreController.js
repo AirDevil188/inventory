@@ -9,7 +9,6 @@ dotenv.config();
 
 exports.list_genres = asyncHandler(async (req, res, next) => {
   const allGenres = await Genre.find().sort("name").exec();
-  console.log(allGenres);
 
   res.render("list_genres", {
     title: "All Genres",
@@ -43,7 +42,7 @@ exports.genre_form_get = asyncHandler(async (req, res, next) => {
 });
 
 exports.genre_form_post = [
-  body("game_genre", "Genre must not be empty.")
+  body("genre_name", "Genre must not be empty.")
     .trim()
     .isLength({ min: 1 })
     .escape(),
@@ -52,7 +51,7 @@ exports.genre_form_post = [
     const errors = validationResult(req);
 
     const genre = new Genre({
-      name: req.body.game_genre,
+      name: req.body.genre_name,
     });
 
     if (!errors.isEmpty()) {
@@ -66,7 +65,6 @@ exports.genre_form_post = [
     }
   }),
 ];
-
 exports.genre_delete_get = asyncHandler(async (req, res, next) => {
   const [genre, allGamesGenre] = await Promise.all([
     Genre.findById(req.params.id).exec(),
@@ -86,24 +84,44 @@ exports.genre_delete_get = asyncHandler(async (req, res, next) => {
   });
 });
 
-exports.genre_delete_post = asyncHandler(async (req, res, next) => {
-  const [genre, allGamesGenre] = await Promise.all([
-    Genre.findById(req.params.id).exec(),
-    Game.find({ genre: req.params.id }).sort({ title: 1 }).exec(),
-  ]);
+exports.genre_delete_post = [
+  body("master_password", "Incorrect  password")
+    .matches(process.env.MASTER_PASSWORD)
+    .escape(),
 
-  if (allGamesGenre.length > 0) {
-    res.render("genre_delete", {
-      title: "Delete Genre",
-      genre: genre,
-      list_games: allGamesGenre,
-    });
-    return;
-  } else {
-    await Genre.findByIdAndDelete(req.body.genre_id);
-    res.redirect("/catalog/genres");
-  }
-});
+  asyncHandler(async (req, res, next) => {
+    const [genre, allGamesGenre] = await Promise.all([
+      Genre.findById(req.params.id).exec(),
+      Game.find({ genre: req.params.id }).sort({ title: 1 }).exec(),
+    ]);
+    const errors = validationResult(req);
+
+    if (allGamesGenre.length > 0) {
+      res.render("genre_delete", {
+        title: "Delete Genre",
+        genre: genre,
+        list_games: allGamesGenre,
+        errors: errors.array(),
+      });
+      return;
+    }
+    if (!errors.isEmpty()) {
+      const [genre, allGamesGenre] = await Promise.all([
+        Genre.findById(req.params.id).exec(),
+        Game.find({ genre: req.params.id }).sort({ title: 1 }).exec(),
+      ]);
+      res.render("genre_delete", {
+        title: "Delete Genre",
+        genre: genre,
+        list_games: allGamesGenre,
+        errors: errors.array(),
+      });
+    } else {
+      await Genre.findByIdAndDelete(req.body.genre_id);
+      res.redirect("/catalog/genres");
+    }
+  }),
+];
 
 exports.genre_update_get = asyncHandler(async (req, res, next) => {
   const genre = await Genre.findById(req.params.id);
@@ -154,25 +172,3 @@ exports.genre_update_post = [
     }
   }),
 ];
-
-exports.password_genre_get = asyncHandler(async (req, res, next) => {
-  res.render("password_form", {
-    title: "Password Login",
-  });
-  console.log(process.env.MASTER_PASSWORD);
-  console.log(req.originalUrl);
-});
-
-exports.password_genre_post = asyncHandler(async (req, res, next) => {
-  console.log(req.body.master_password);
-  console.log(req.originalUrl);
-
-  if (req.body.master_password === process.env.MASTER_PASSWORD) {
-    res.render("genre_form", {
-      title: "Password Login",
-    });
-  } else
-    res.render("password_form", {
-      title: "Password Login",
-    });
-});

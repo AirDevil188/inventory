@@ -197,24 +197,46 @@ exports.game_delete_get = asyncHandler(async (req, res, next) => {
   });
 });
 
-exports.game_delete_post = asyncHandler(async (req, res, next) => {
-  const [game, allGameinstace] = await Promise.all([
-    Game.findById(req.params.id).exec(),
-    GameInstance.find({ game: req.params.id }).exec(),
-  ]);
+exports.game_delete_post = [
+  body("master_password", "Password is incorrect.")
+    .matches(process.env.MASTER_PASSWORD)
+    .escape(),
 
-  if (allGameinstace.length > 0) {
-    res.render("delete_game", {
-      title: "Delete Game",
-      game: game,
-      list_gameinstances: allGameinstace,
-    });
-    return;
-  } else {
-    await Game.findByIdAndDelete(req.body.game_id);
-    res.redirect("/catalog/games");
-  }
-});
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req);
+    const [game, allGameInstance] = await Promise.all([
+      Game.findById(req.params.id).exec(),
+      GameInstance.find({ game: req.params.id }).exec(),
+    ]);
+
+    if (allGameInstance.length > 0) {
+      res.render("game_delete", {
+        title: "Delete Game",
+        game: game,
+        list_gameinstances: allGameInstance,
+        errors: errors.array(),
+      });
+      return;
+    }
+
+    if (!errors.isEmpty()) {
+      const [game, allGameInstance] = await Promise.all([
+        Game.findById(req.params.id).exec(),
+        GameInstance.find({ game: req.params.id }).exec(),
+      ]);
+      res.render("game_delete", {
+        title: "Delete Game",
+        game: game,
+        list_gameinstances: allGameInstance,
+        errors: errors.array(),
+      });
+      return;
+    } else {
+      await Game.findByIdAndDelete(req.body.game_id);
+      res.redirect("/catalog/games/");
+    }
+  }),
+];
 
 exports.game_update_get = asyncHandler(async (req, res, next) => {
   const [game, allGamePublisher, allGameDeveloper, gamePlatform, gameGenre] =

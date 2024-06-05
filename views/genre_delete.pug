@@ -13,6 +13,10 @@ block content
             form(method="POST")
                 div.form-group
                     input.form-control(type= "hidden", name= "genre_id", id= "genre_id", value=genre.id )
+
+                div.form-group
+                    label(for="master_password").form-label #[strong Password: ]
+                    input(type="password" id="master_password" name="master_password").form-control
                     
                 button.btn.btn-primary(type="submit") Delete
 

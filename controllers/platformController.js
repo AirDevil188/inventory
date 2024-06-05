@@ -78,24 +78,64 @@ exports.platform_delete_get = asyncHandler(async (req, res, next) => {
   });
 });
 
-exports.platform_delete_post = asyncHandler(async (req, res, next) => {
-  const [platform, allGamesPlatform] = await Promise.all([
-    Platform.findById(req.params.id).exec(),
-    Game.find({ platform: req.params.id }).sort({ title: 1 }).exec(),
-  ]);
+// exports.platform_delete_post = asyncHandler(async (req, res, next) => {
 
-  if (allGamesPlatform.length > 0) {
-    res.render("platform_delete", {
-      title: "Delete Platform",
-      platform: platform,
-      list_games: allGamesPlatform,
-    });
-    return;
-  } else {
-    await Platform.findByIdAndDelete(req.body.platform_id);
-    res.redirect("/catalog/platforms");
-  }
-});
+//   const [platform, allGamesPlatform] = await Promise.all([
+//     Platform.findById(req.params.id).exec(),
+//     Game.find({ platform: req.params.id }).sort({ title: 1 }).exec(),
+//   ]);
+
+//   if (allGamesPlatform.length > 0) {
+//     res.render("platform_delete", {
+//       title: "Delete Platform",
+//       platform: platform,
+//       list_games: allGamesPlatform,
+//     });
+//     return;
+//   } else {
+//     await Platform.findByIdAndDelete(req.body.platform_id);
+//     res.redirect("/catalog/platforms");
+//   }
+// });
+
+exports.platform_delete_post = [
+  body("master_password", "Incorrect password")
+    .matches(process.env.MASTER_PASSWORD)
+    .escape(),
+
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req);
+    const [platform, allGamesPlatform] = await Promise.all([
+      Platform.findById(req.params.id).exec(),
+      Game.find({ platform: req.params.id }).sort({ title: 1 }).exec(),
+    ]);
+    if (allGamesPlatform.length > 0) {
+      res.render("platform_delete", {
+        title: "Delete Platform",
+        platform: platform,
+        list_games: allGamesPlatform,
+        errors: errors.array(),
+      });
+      return;
+    }
+    if (!errors.isEmpty()) {
+      const [platform, allGamesPlatform] = await Promise.all([
+        Platform.findById(req.params.id).exec(),
+        Game.find({ platform: req.params.id }).exec(),
+      ]);
+
+      res.render("platform_delete", {
+        title: "Delete Platform",
+        platform: platform,
+        list_games: allGamesPlatform,
+        errors: errors.array(),
+      });
+    } else {
+      await Platform.findByIdAndDelete(req.params.id);
+      res.redirect("/catalog/platforms");
+    }
+  }),
+];
 
 exports.platform_update_get = asyncHandler(async (req, res, next) => {
   const platform = await Platform.findById(req.params.id);

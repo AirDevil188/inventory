@@ -72,6 +72,7 @@ exports.gameinstance_form_post = [
 
 exports.gameinstance_delete_get = asyncHandler(async (req, res, next) => {
   const gameinstance = await GameInstance.findById(req.params.id).exec();
+  console.log(gameinstance);
 
   if (gameinstance === null) {
     const err = new Error("Gameinstance was not found.");
@@ -85,11 +86,30 @@ exports.gameinstance_delete_get = asyncHandler(async (req, res, next) => {
   });
 });
 
-exports.gameinstance_delete_post = asyncHandler(async (req, res, next) => {
-  await GameInstance.findByIdAndDelete(req.body.gameinstance_id);
-  res.redirect("/catalog/gameinstances");
-});
+exports.gameinstance_delete_post = [
+  body("master_password", "Password is incorrect.")
+    .matches(process.env.MASTER_PASSWORD)
+    .escape(),
 
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      const gameinstance = await GameInstance.findById(req.params.id).exec();
+      const allGames = await Game.find().sort({ title: 1 }).exec();
+      res.render("gameinstance_delete", {
+        title: "Delete Gameinstance",
+        gameinstance: gameinstance,
+        list_games: allGames,
+        errors: errors.array(),
+      });
+      return;
+    } else {
+      await GameInstance.findByIdAndDelete(req.body.gameinstance_id);
+      res.redirect("/catalog/gameinstances");
+    }
+  }),
+];
 exports.gameinstance_update_get = asyncHandler(async (req, res, next) => {
   const [gameinstance, allGames] = await Promise.all([
     GameInstance.findById(req.params.id).populate("game").exec(),

@@ -18,8 +18,18 @@ block content
         p #[strong Are you sure that you want to delete this publisher: ]
 
             form(method="POST")
+
+                div.form-group
+                label(for="master_password").form-label #[strong Password: ]
+                input(type="password" id="master_password" name="master_password").form-control
+
                 div.form-group
                     input.form-control(type= "hidden", name= "publisher_id", id= "publisher_id", value=publisher.id )
                     
                 button.btn.btn-primary(type="submit") Delete
 
+
+    if errors 
+        each error in errors 
+            div.alert.alert-danger(role = "alert")
+                p !{error.msg}

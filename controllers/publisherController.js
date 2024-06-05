@@ -103,27 +103,66 @@ exports.publisher_delete_get = asyncHandler(async (req, res, next) => {
   });
 });
 
-exports.publisher_delete_post = asyncHandler(async (req, res, next) => {
-  const [publisher, allGamesPublisher, allDevelopersPublisher] =
-    await Promise.all([
+// exports.publisher_delete_post = asyncHandler(async (req, res, next) => {
+//   const [publisher, allGamesPublisher, allDevelopersPublisher] =
+//     await Promise.all([
+//       Publisher.findById(req.params.id).exec(),
+//       Game.find({ publisher: req.params.id }).sort({ title: 1 }).exec(),
+//       Developer.find({ publisher: req.params.id }).sort({ name: 1 }).exec(),
+//     ]);
+
+//   if (allGamesPublisher.length > 0 || allDevelopersPublisher.length > 0) {
+//     res.render("publisher_delete", {
+//       title: "Delete Publisher",
+//       publisher: publisher,
+//       list_developers: allDevelopersPublisher,
+//       list_games: allGamesPublisher,
+//     });
+//     return;
+//   } else {
+//     await Publisher.findByIdAndDelete(req.body.publisher_id);
+//     res.redirect("/catalog/publishers");
+//   }
+// });
+
+exports.publisher_delete_post = [
+  body("master_password", "Incorrect Password")
+    .matches(process.env.MASTER_PASSWORD)
+    .escape(),
+
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req);
+    const [publisher, allGames, allDevelopers] = await Promise.all([
       Publisher.findById(req.params.id).exec(),
       Game.find({ publisher: req.params.id }).sort({ title: 1 }).exec(),
       Developer.find({ publisher: req.params.id }).sort({ name: 1 }).exec(),
     ]);
 
-  if (allGamesPublisher.length > 0 || allDevelopersPublisher.length > 0) {
-    res.render("publisher_delete", {
-      title: "Delete Publisher",
-      publisher: publisher,
-      list_developers: allDevelopersPublisher,
-      list_games: allGamesPublisher,
-    });
-    return;
-  } else {
-    await Publisher.findByIdAndDelete(req.body.publisher_id);
-    res.redirect("/catalog/publishers");
-  }
-});
+    if (allGames.length > 0 || allDevelopers.length > 0) {
+      res.render("publisher_delete", {
+        title: "Delete Publisher",
+        publisher: publisher,
+        list_games: allGames,
+        list_developers: allDevelopers,
+        errors: errors.array(),
+      });
+      return;
+    }
+    if (!errors.isEmpty()) {
+      res.render("publisher_delete", {
+        title: "Delete Publisher",
+        publisher: publisher,
+        list_games: allGames,
+        list_developers: allDevelopers,
+        errors: errors.array(),
+      });
+      return;
+    } else {
+      await Publisher.findByIdAndDelete(req.body.publisher_id);
+      res.redirect("/catalog/publishers");
+    }
+  }),
+];
 
 exports.publisher_update_get = asyncHandler(async (req, res, next) => {
   const publisher = await Publisher.findById(req.params.id).exec();

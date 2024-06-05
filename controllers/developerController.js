@@ -111,24 +111,59 @@ exports.developer_delete_get = asyncHandler(async (req, res, next) => {
   });
 });
 
-exports.developer_delete_post = asyncHandler(async (req, res, next) => {
-  const [developer, allGamesDeveloper] = await Promise.all([
-    Developer.findById(req.params.id).exec(),
-    Game.find({ developer: req.params.id }).exec(),
-  ]);
+// exports.developer_delete_post = asyncHandler(async (req, res, next) => {
+//   const [developer, allGamesDeveloper] = await Promise.all([
+//     Developer.findById(req.params.id).exec(),
+//     Game.find({ developer: req.params.id }).exec(),
+//   ]);
 
-  if (allGamesDeveloper > 0) {
-    res.render("developer_delete", {
-      title: "Delete Developer",
-      developer: developer,
-      list_games: allGamesDeveloper,
-    });
-    return;
-  } else {
-    await Developer.findByIdAndDelete(req.body.developer_id);
-    res.redirect("/catalog/developers");
-  }
-});
+//   if (allGamesDeveloper > 0) {
+//     res.render("developer_delete", {
+//       title: "Delete Developer",
+//       developer: developer,
+//       list_games: allGamesDeveloper,
+//     });
+//     return;
+//   } else {
+//     await Developer.findByIdAndDelete(req.body.developer_id);
+//     res.redirect("/catalog/developers");
+//   }
+// });
+
+exports.developer_delete_post = [
+  body("master_password", "Password is incorrect")
+    .matches(process.env.MASTER_PASSWORD)
+    .escape(),
+
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req);
+    const [developer, allGames] = await Promise.all([
+      Developer.findById(req.params.id).exec(),
+      Game.find({ developer: req.params.id }).sort({ title: 1 }).exec(),
+    ]);
+    if (allGames.length > 0) {
+      res.render("developer_delete", {
+        title: "Delete Developer",
+        developer: developer,
+        list_games: allGames,
+        errors: errors.array(),
+      });
+      return;
+    }
+    if (!errors.isEmpty()) {
+      res.render("developer_delete", {
+        title: "Delete Developer",
+        developer: developer,
+        list_games: allGames,
+        errors: errors.array(),
+      });
+      return;
+    } else {
+      await Developer.findByIdAndDelete(req.body.developer_id);
+      res.redirect("/catalog/developers");
+    }
+  }),
+];
 
 exports.developer_update_get = asyncHandler(async (req, res, next) => {
   const [developer, allPublishers] = await Promise.all([

@@ -16,7 +16,14 @@ block content
 
             form(method="POST")
                 div.form-group
+                    label(for="master_password").form-label #[strong Password: ]
+                    input(type="password", id= "master_password", name="master_password").form-control 
+
+                div.form-group
                     input.form-control(type= "hidden", name= "developer_id", id= "developer_id", value=developer.id )
                     
                 button.btn.btn-primary(type="submit") Delete
-
+    if errors 
+        each error in errors 
+            div.alert.alert-danger(role = "alert")
+                p !{error.msg}

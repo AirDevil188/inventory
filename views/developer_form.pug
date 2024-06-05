@@ -32,7 +32,9 @@ block content
         div.form-group
             label(for="developer_date_of_closing").form-label #[strong Date of Closing: ]
             input(type="date", id="developer_date_of_closing", name="developer_date_of_closing" value=(undefined === developer ? "" : developer.date_of_closing_default)).form-control
-            
+
+
+        if developer
             div.form-group
             label(for="master_password").form-label #[strong Password: ]
             input(type="password" id="master_password" name="master_password").form-control

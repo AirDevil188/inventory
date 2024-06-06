@@ -11,11 +11,6 @@ const multer = require("multer");
 const cloudinary = require("cloudinary").v2;
 const dotenv = require("dotenv");
 dotenv.config();
-cloudinary.config().cloud_name;
-
-cloudinary.config({
-  secure: true,
-});
 
 exports.index = asyncHandler(async (req, res, next) => {
   const [numGames, numPublishers, numDevelopers, numGenres, numGameInstances] =
@@ -239,6 +234,7 @@ exports.game_delete_post = [
 ];
 
 exports.game_update_get = asyncHandler(async (req, res, next) => {
+  console.log(process.env.CLOUDINARY_URL);
   const [game, allGamePublisher, allGameDeveloper, gamePlatform, gameGenre] =
     await Promise.all([
       Game.findById(req.params.id).exec(),

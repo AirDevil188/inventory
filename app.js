@@ -10,6 +10,7 @@ const dotenv = require("dotenv");
 const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
 const catalogRouter = require("./routes/catalog");
+const cloudinary = require("cloudinary").v2;
 
 const app = express();
 
@@ -18,6 +19,13 @@ const mongoose = require("mongoose");
 mongoose.set("strictQuery", false);
 dotenv.config();
 const mongoDB = process.env.MONGODB_URI;
+
+cloudinary.config({
+  secure: true,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_SECRET_KEY,
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+});
 
 main().catch((err) => console.log(err));
 async function main() {
